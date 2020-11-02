@@ -4,13 +4,18 @@
 <head>
 <meta charset="UTF-8">
 <title>My app</title>
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
 </head>
 
 <body>
 
-	<h2>Hello first controller!</h2>
-	<a href="/first/goodbye">Say goodbye</a>
-	<a href="/exit">Exit</a>
+	<h1>Hello first controller!</h1>
+	<a href="/first/goodbye">Say goodbye</a><br>
+	<a href="/exit">Exit</a><br>
+	<a href="/first/hello?name=Tom&surname=Joe">Запрос с параметрами</a>
+	
+<p th:text="${message}"/>
+
 
 </body>
 
