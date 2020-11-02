@@ -31,3 +31,5 @@ build/
 
 ### VS Code ###
 .vscode/
+/.attach_pid314089
+/logs/
