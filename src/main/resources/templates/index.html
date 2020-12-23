@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>e-mag</title>
+<title>SOD</title>
 <link data-th-href="@{/webjars/bulma/0.9.1/css/bulma.css}"
 	rel="stylesheet">
 <link rel="stylesheet"
@@ -13,7 +13,7 @@
 
 </head>
 
-<body>
+<body class="has-background-light Site">
 
 	<!-- 	<h1>Hello world INDEX utf-8!</h1>-->
 	<section>
@@ -34,7 +34,7 @@
 				<div id="navbarBasicExample" class="navbar-menu">
 					<div class="navbar-start">
 						<a class="navbar-item" href="/"> Home </a> <a class="navbar-item">
-							Documentation </a>
+							Документация </a>
 
 						<div class="navbar-item has-dropdown is-hoverable">
 							<a class="navbar-link"> More </a>
@@ -58,28 +58,51 @@
 					</div>
 				</div>
 			</nav>
-
 		</div>
-		<!-- 		</div>
- -->
 	</section>
-	<section>
-		<div class="control">
-<!-- 			<textarea class="textarea" rows="20" readonly th:field="*{ipFilter}">This content is readonly</textarea> -->
-			<textarea class="textarea" rows="20" readonly >This content is readonly</textarea>
-		</div>
-		<form action="" method="get">
-			<div class="field is-grouped">
-				<div class="control">
-					<button class="button is-link">Submit</button>
-				</div>
-				<div class="field">
-					<p class="control">
-						<button class="button is-link is-light">Cancel</button>
-					</p>
-				</div>
+<!-- 	<section class="section">
+		<div class="container">
+			<div class="tabs">
+				<ul>
+					<li class="is-active"><a>prom.ua</a></li>
+					<li><a>emag.cn.ua</a></li>
+					<li><a>zakupka.com</a></li>
+				</ul>
 			</div>
-		</form>
+		</div>
+ --><!-- 		<div class="container">
+			<a class="button is-primary" href="/category/list">Все категории</a>
+			<a class="button is-danger" href="/category/deleteAll"><span>Delete</span>
+				<span class="icon is-small"> <i class="fas fa-trash"></i>
+			</span></a> <a class="button is-primary" href="/category/importXML">Импорт
+				из XML</a>
+		</div>
+	</section>
+ -->
+	<section class="section Site-content">
+		<div class="container">
+			<div class="content">
+				<h2>Сервер обмена данными с внешними приложениями</h2>
+			</div>
+		</div>
+		<div class="content">
+			<!-- 			<textarea class="textarea" rows="20" readonly th:field="*{ipFilter}">This content is readonly</textarea> -->
+			<textarea class="textarea" rows="10" readonly>содержимое sod.log</textarea>
+		</div>
+		<div class="control">
+			<form action="" method="get">
+				<div class="field is-grouped">
+					<div class="control">
+						<button class="button is-link">Submit</button>
+					</div>
+					<div class="field">
+						<p class="control">
+							<button class="button is-link is-light">Cancel</button>
+						</p>
+					</div>
+				</div>
+			</form>
+		</div>
 	</section>
 </body>
 
