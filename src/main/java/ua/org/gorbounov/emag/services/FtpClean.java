@@ -16,6 +16,8 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @Component
 public class FtpClean {
+	@Value("${emag.enabled:false}")
+	private Boolean emagEnabled;
 
 	@Value("${emag.ftp_server}")
 	String server;
@@ -27,78 +29,79 @@ public class FtpClean {
 	String password;
 
 	@Async
-	@Scheduled(cron="${emag.clean.cron}")
+	@Scheduled(cron = "${emag.clean.cron}")
 	public void ftpCleanScheduledTask() {
-		log.info("------- Запущен поток FtpClean -------");
-		try {
+		if (emagEnabled) {
+			log.info("------- Запущен поток FtpClean -------");
+			try {
 
-			FTPClient ftpClient = new FTPClient();
-			ftpClient.connect(server, port);
-			ftpClient.login(user, password);
+				FTPClient ftpClient = new FTPClient();
+				ftpClient.connect(server, port);
+				ftpClient.login(user, password);
 //		ftpClient.open();
 //		ftpClient.showServerReply();
-			log.trace("Открываем соединение");
-			// ==============
-			FTPFileFilter filter = new FTPFileFilter() {
+				log.trace("Открываем соединение");
+				// ==============
+				FTPFileFilter filter = new FTPFileFilter() {
 
-				public boolean accept(final FTPFile file) {
-					return (file.isFile() && file.getName().contains("processed_products"));
+					public boolean accept(final FTPFile file) {
+						return (file.isFile() && file.getName().contains("processed_products"));
+					}
+				};
+
+				log.trace("Получаем файлы");
+				FTPFile[] files = ftpClient.listFiles("/", filter);
+				if (files.length == 0) {
+					log.debug("Нет processed_products* для удаления.");
 				}
-			};
 
-			log.trace("Получаем файлы");
-			FTPFile[] files = ftpClient.listFiles("/", filter);
-			if (files.length == 0) {
-				log.debug("Нет processed_products* для удаления.");
-			}
-
-			for (FTPFile file : files) {
-				String details = file.getName();
+				for (FTPFile file : files) {
+					String details = file.getName();
 //			LOG.debug(details);
-				boolean deleted = ftpClient.deleteFile(details);
-				if (deleted) {
-					log.info(details + " удален успешно.");
-				} else {
-					log.error(details + " удалить не получилось.");
+					boolean deleted = ftpClient.deleteFile(details);
+					if (deleted) {
+						log.info(details + " удален успешно.");
+					} else {
+						log.error(details + " удалить не получилось.");
+					}
 				}
-			}
 
-			// ===============
-			// отбираем jpg старше 120 минут
-			FTPFileFilter filterJpg = new FTPFileFilter() {
+				// ===============
+				// отбираем jpg старше 120 минут
+				FTPFileFilter filterJpg = new FTPFileFilter() {
 
-				public boolean accept(final FTPFile file) {
-					Calendar c1 = Calendar.getInstance(); // today
-					c1.add(Calendar.DAY_OF_YEAR, -1); // yesterday
-					Date yes = c1.getTime();
+					public boolean accept(final FTPFile file) {
+						Calendar c1 = Calendar.getInstance(); // today
+						c1.add(Calendar.DAY_OF_YEAR, -1); // yesterday
+						Date yes = c1.getTime();
 
-					return (file.isFile() && file.getName().matches(".*(jpg|jpeg).*")
-							&& file.getTimestamp().getTime().before(yes));
+						return (file.isFile() && file.getName().matches(".*(jpg|jpeg).*")
+								&& file.getTimestamp().getTime().before(yes));
+					}
+				};
+				FTPFile[] filesJpg = ftpClient.listFiles("/", filterJpg);
+				if (filesJpg.length == 0) {
+					log.debug("Нет изображений для удаления.");
 				}
-			};
-			FTPFile[] filesJpg = ftpClient.listFiles("/", filterJpg);
-			if (filesJpg.length == 0) {
-				log.debug("Нет изображений для удаления.");
-			}
-			for (FTPFile jpg : filesJpg) {
-				String details = jpg.getName();
+				for (FTPFile jpg : filesJpg) {
+					String details = jpg.getName();
 
-				boolean deleted = ftpClient.deleteFile(details);
-				if (deleted) {
-					log.info(details + " удален успешно.");
-				} else {
-					log.error(details + " удалить не получилось.");
+					boolean deleted = ftpClient.deleteFile(details);
+					if (deleted) {
+						log.info(details + " удален успешно.");
+					} else {
+						log.error(details + " удалить не получилось.");
+					}
 				}
-			}
 
-			ftpClient.disconnect();
+				ftpClient.disconnect();
 //		ftpClient.showServerReply();
-			log.trace("Good bye.");
+				log.trace("Good bye.");
 //		}
-		} catch (Exception e) {
-			log.error(e);
+			} catch (Exception e) {
+				log.error(e);
+			}
+			log.debug("------- Завершен поток FtpClean -------");
 		}
-		log.debug("------- Завершен поток FtpClean -------");
-
 	}
 }

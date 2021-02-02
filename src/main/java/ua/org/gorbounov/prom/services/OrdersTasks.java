@@ -25,7 +25,16 @@ import lombok.extern.log4j.Log4j2;
 public class OrdersTasks {
 	@Value("${prom.ua.orders.url}")
 	private String promUaOrdersUrl;
+	@Value("${prom.ua.enabled:false}")
+	private Boolean promUaEnabled;
 
+	@Value("${prom.ua.1c.path}")
+	String command;
+	@Value("${prom.ua.products.upload.1c.user}")
+	String upload1cUser;
+	@Value("${prom.ua.products.import.1c.user}")
+	String import1cUser;
+	
 	@Async
 	@Scheduled(cron = "${prom.ua.orders.download.cron}")
 	public void getOrdersSheduledTask() {
@@ -36,11 +45,13 @@ public class OrdersTasks {
 	@Async
 	@Scheduled(cron = "${prom.ua.products.upload.cron}")
 	public void exportProductSheduledTask() {
-		log.debug("getOrdersSheduledTask run successfully...");
-		exec1cExportProducts();
+		log.debug("promUaEnabled = " + promUaEnabled);
+		if (promUaEnabled) {
+			log.debug("getOrdersSheduledTask run successfully...");
+			exec1cExportProducts();
+		}
 	}
 
-	
 	/**
 	*
 	*/
@@ -115,37 +126,14 @@ public class OrdersTasks {
 				}
 				log.trace(fileNameString);
 
-				/*
-				 * SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd_HHmmss"); Date
-				 * now = new Date();
-				 * 
-				 * String spot2r_path = mProps.getProperty("spot2r_path"); String filePath =
-				 * spot2r_path + File.separator + "down_zip" + File.separator +
-				 * formatter.format(now) + ".zip"; // "./file.zip"; log.trace(filePath);
-				 * 
-				 * if (!fileNameString.equals("empty.zip") & !fileNameString.isEmpty()) {
-				 * log.debug("fileNameString=" + fileNameString); InputStream is =
-				 * entity.getContent(); FileOutputStream fos = new FileOutputStream(new
-				 * File(filePath));
-				 * 
-				 * int inByte; while ((inByte = is.read()) != -1) { fos.write(inByte); }
-				 * 
-				 * is.close(); fos.close(); log.info("Файл " + filePath + " записан."); result =
-				 * filePath;
-				 * 
-				 * } else { log.debug("Возвращен empty.zip - загрузка пропущена."); result = "";
-				 * }
-				 */
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
-			// e.printStackTrace();
 			log.error(e);
 		}
 
 		return result;
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -153,11 +141,12 @@ public class OrdersTasks {
 		log.debug("------- exec1cCreateOrders start -----------");
 		Runtime r = Runtime.getRuntime();
 		Process p = null;
-		String user1c="prom_get_orders";
+//		String user1c = "prom_get_orders";
 		try {
-			String command = "\"C:\\Program Files (x86)\\1Cv77\\BIN\\1cv7s.exe\" ENTERPRISE /DD:\\base\\cron /N"+user1c;
-			log.trace("command=" + command);
-			p = r.exec(command);
+//			String command = "\"C:\\Program Files (x86)\\1Cv77\\BIN\\1cv7s.exe\" ENTERPRISE /DD:\\base\\cron /N"
+//					+ user1c;
+			log.trace("command=" + command+import1cUser);
+			p = r.exec(command+import1cUser);
 			p.waitFor();
 			p.getInputStream().close();
 			p.getOutputStream().close();
@@ -177,11 +166,12 @@ public class OrdersTasks {
 		log.debug("------- exec1cExportProducts start -----------");
 		Runtime r = Runtime.getRuntime();
 		Process p = null;
-		String user1c="prom_export";
+//		String user1c = "prom_export";
 		try {
-			String command = "\"C:\\Program Files (x86)\\1Cv77\\BIN\\1cv7s.exe\" ENTERPRISE /DD:\\base\\cron /N"+user1c;
-			log.trace("command=" + command);
-			p = r.exec(command);
+//			String command = "\"C:\\Program Files (x86)\\1Cv77\\BIN\\1cv7s.exe\" ENTERPRISE /DD:\\base\\cron /N"
+//					+ user1c;
+			log.trace("command=" + command+upload1cUser);
+			p = r.exec(command+upload1cUser);
 			p.waitFor();
 			p.getInputStream().close();
 			p.getOutputStream().close();
