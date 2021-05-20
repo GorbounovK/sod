@@ -2,6 +2,10 @@ package ua.org.gorbounov.prom.services;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.PostConstruct;
+
 import java.util.Objects;
 
 import java.util.Arrays;
@@ -22,7 +26,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Component
-public class OrdersTasks {
+public class OrdersService {
 	@Value("${prom.ua.orders.url}")
 	private String promUaOrdersUrl;
 	@Value("${prom.ua.enabled:false}")
@@ -30,25 +34,22 @@ public class OrdersTasks {
 
 	@Value("${prom.ua.1c.path}")
 	String command;
-	@Value("${prom.ua.products.upload.1c.user}")
-	String upload1cUser;
+//	@Value("${prom.ua.products.upload.1c.user}")
+//	String upload1cUser;
 	@Value("${prom.ua.products.import.1c.user}")
 	String import1cUser;
-	
-	@Async
-	@Scheduled(cron = "${prom.ua.orders.download.cron}")
-	public void getOrdersSheduledTask() {
-		log.debug("getOrdersSheduledTask run successfully...");
-		exec1cCreateOrders();
+
+	@PostConstruct
+	public void init() {
+		log.info(toString());
 	}
 
 	@Async
-	@Scheduled(cron = "${prom.ua.products.upload.cron}")
-	public void exportProductSheduledTask() {
-		log.debug("promUaEnabled = " + promUaEnabled);
+	@Scheduled(cron = "${prom.ua.orders.download.cron}")
+	public void getOrdersSheduledTask() {
 		if (promUaEnabled) {
 			log.debug("getOrdersSheduledTask run successfully...");
-			exec1cExportProducts();
+			exec1cCreateOrders();
 		}
 	}
 
@@ -142,46 +143,40 @@ public class OrdersTasks {
 		Runtime r = Runtime.getRuntime();
 		Process p = null;
 //		String user1c = "prom_get_orders";
-		try {
-//			String command = "\"C:\\Program Files (x86)\\1Cv77\\BIN\\1cv7s.exe\" ENTERPRISE /DD:\\base\\cron /N"
-//					+ user1c;
-			log.trace("command=" + command+import1cUser);
-			p = r.exec(command+import1cUser);
-			p.waitFor();
-			p.getInputStream().close();
-			p.getOutputStream().close();
-			p.getErrorStream().close();
-		} catch (Exception e) {
-			log.error(e.getLocalizedMessage());
+		boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
+		if (isWindows) {
+			log.debug(System.getProperty("os.name").toLowerCase());
+			try {
+				log.trace("command=" + command + import1cUser);
+				p = r.exec(command + import1cUser);
+				if (p.waitFor(5, TimeUnit.MINUTES)) {
+					// true - процесс нормально завершился
+					log.trace("процесс завершился нормально");
+				} else {
+					// false - не успел завершиться
+					log.trace("время вышло, процесс не завершился");
+				}
+				// TODO читать входные потоки процесса
+
+				p.getInputStream().close();
+				p.getOutputStream().close();
+				p.getErrorStream().close();
+			} catch (Exception e) {
+				log.error(e.getLocalizedMessage());
+			}
+			log.info("Загрузка с prom.ua завершилась с кодом возврата - " + p.exitValue());
+		} else {
+			log.debug("не windows");
 		}
-		log.debug("Код возврата - " + p.exitValue());
 
 		log.debug("------- exec1cCreateOrders complete -----------");
+
 	}
 
-	/**
-	 * 
-	 */
-	public void exec1cExportProducts() {
-		log.debug("------- exec1cExportProducts start -----------");
-		Runtime r = Runtime.getRuntime();
-		Process p = null;
-//		String user1c = "prom_export";
-		try {
-//			String command = "\"C:\\Program Files (x86)\\1Cv77\\BIN\\1cv7s.exe\" ENTERPRISE /DD:\\base\\cron /N"
-//					+ user1c;
-			log.trace("command=" + command+upload1cUser);
-			p = r.exec(command+upload1cUser);
-			p.waitFor();
-			p.getInputStream().close();
-			p.getOutputStream().close();
-			p.getErrorStream().close();
-		} catch (Exception e) {
-			log.error(e.getLocalizedMessage());
-		}
-		log.debug("Код возврата - " + p.exitValue());
-
-		log.debug("------- exec1cExportProducts complete -----------");
+	@Override
+	public String toString() {
+		return "OrdersTasks [promUaOrdersUrl=" + promUaOrdersUrl + ", promUaEnabled=" + promUaEnabled + ", command="
+				+ command + ",  import1cUser=" + import1cUser + "]";
 	}
 
 }

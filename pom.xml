@@ -6,15 +6,28 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.3.2.RELEASE</version>
+		<version>2.4.5</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>ua.org.gorbounov</groupId>
 	<artifactId>sod</artifactId>
-	<version>0.1.2-SNAPSHOT</version>
+	<version>0.1.4-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>sod</name>
 	<description>SOD</description>
+
+	<developers>
+		<developer>
+			<id>gorbounov</id>
+			<name>Gorbounov Konstantin</name>
+			<email>gorbounov.k@gmail.com</email>
+			<url>http://github.com/gorbounov</url>
+			<timezone>+2</timezone>
+			<roles>
+				<role>Java Developer</role>
+			</roles>
+		</developer>
+	</developers>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -80,6 +93,13 @@
 			<artifactId>spring-webmvc</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+
+
 		<!-- https://mvnrepository.com/artifact/org.webjars.npm/bulma -->
 		<dependency>
 			<groupId>org.webjars.npm</groupId>
@@ -112,7 +132,7 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>4.5.12</version>
+			<!-- <version>4.5.12</version> -->
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/commons-httpclient/commons-httpclient -->
@@ -131,6 +151,17 @@
 			<version>3.6</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -138,6 +169,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<addResources>true</addResources>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

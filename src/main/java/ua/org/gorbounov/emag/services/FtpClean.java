@@ -1,11 +1,15 @@
 package ua.org.gorbounov.emag.services;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+
+import javax.annotation.PostConstruct;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPFileFilter;
+import org.apache.commons.net.ftp.FTPReply;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -32,15 +36,22 @@ public class FtpClean {
 	@Scheduled(cron = "${emag.clean.cron}")
 	public void ftpCleanScheduledTask() {
 		if (emagEnabled) {
-			log.info("------- Запущен поток FtpClean -------");
+			log.debug("------- Запущен поток FtpClean -------");
 			try {
 
 				FTPClient ftpClient = new FTPClient();
+				ftpClient.setControlEncoding("UTF-8");
 				ftpClient.connect(server, port);
+				int reply = ftpClient.getReplyCode();
+				if (!FTPReply.isPositiveCompletion(reply)) {
+					// не получилось
+					ftpClient.disconnect();
+					throw new IOException("Не удалось подключиться к серверу.");
+				}
 				ftpClient.login(user, password);
-//		ftpClient.open();
-//		ftpClient.showServerReply();
-				log.trace("Открываем соединение");
+				log.trace("К серверу успешло залогинились соединение");
+				ftpClient.enterLocalPassiveMode();
+				
 				// ==============
 				FTPFileFilter filter = new FTPFileFilter() {
 
@@ -95,13 +106,23 @@ public class FtpClean {
 				}
 
 				ftpClient.disconnect();
-//		ftpClient.showServerReply();
 				log.trace("Good bye.");
-//		}
 			} catch (Exception e) {
 				log.error(e);
 			}
 			log.debug("------- Завершен поток FtpClean -------");
+			log.info("FtpClean завершен успешно");
 		}
 	}
+
+	@Override
+	public String toString() {
+		return "FtpClean [emagEnabled=" + emagEnabled + ", server=" + server + ", port=" + port + ", user=" + user
+				+ ", password=" + password + "]";
+	}
+	@PostConstruct
+	public void init() {
+		log.info(toString());
+	}
+
 }

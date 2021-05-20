@@ -1,5 +1,9 @@
 package ua.org.gorbounov.emag.services;
 
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,6 +22,17 @@ public class EmagTasks {
 
 	@Value("${emag.upload.user1C}")
 	private String upload1Cuser;
+
+	@PostConstruct
+	public void init() {
+		log.info(toString());
+	}
+
+	@Override
+	public String toString() {
+		return "EmagTasks [emagEnabled=" + emagEnabled + ", orders1Cuser=" + orders1Cuser + ", upload1Cuser="
+				+ upload1Cuser + "]";
+	}
 
 	@Async
 	@Scheduled(cron = "${emag.orders.download.cron}")
@@ -59,6 +74,7 @@ public class EmagTasks {
 				log.error(e.getLocalizedMessage());
 			}
 			log.debug("Код возврата - " + p.exitValue());
+			log.info("Загрузка с e-mag.c.ua завершилась с кодом возврата - " + p.exitValue());
 
 			log.debug("------- exec1cDownload complete -----------");
 		}
@@ -78,7 +94,13 @@ public class EmagTasks {
 						+ user1c;
 				log.trace("command=" + command);
 				p = r.exec(command);
-				p.waitFor();
+				if (p.waitFor(15, TimeUnit.MINUTES)) {
+					// true - процесс нормально завершился
+					log.trace("процесс завершился нормально");
+				} else {
+					// false - не успел завершиться
+					log.trace("время вышло, процесс не завершился");
+				}
 				p.getInputStream().close();
 				p.getOutputStream().close();
 				p.getErrorStream().close();
@@ -86,6 +108,7 @@ public class EmagTasks {
 				log.error(e.getLocalizedMessage());
 			}
 			log.debug("Код возврата - " + p.exitValue());
+			log.info("Выгрузка на e-mag.c.ua завершилась с кодом возврата - " + p.exitValue());
 
 			log.debug("------- exec1cUpload complete -----------");
 		}
