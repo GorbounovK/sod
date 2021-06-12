@@ -1,6 +1,8 @@
 package ua.org.gorbounov.prom.services;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -33,11 +35,14 @@ public class OrdersService {
 	private Boolean promUaEnabled;
 
 	@Value("${prom.ua.1c.path}")
-	String command;
-//	@Value("${prom.ua.products.upload.1c.user}")
-//	String upload1cUser;
+	String path_1c;
+	@Value("${prom.ua.products.import.1c.base}")
+	String import1cBase;
 	@Value("${prom.ua.products.import.1c.user}")
 	String import1cUser;
+	@Value("${prom.ua.products.import.script}")
+	String importScript;
+
 
 	@PostConstruct
 	public void init() {
@@ -140,23 +145,36 @@ public class OrdersService {
 	 */
 	public void exec1cCreateOrders() {
 		log.debug("------- exec1cCreateOrders start -----------");
-		Runtime r = Runtime.getRuntime();
 		Process p = null;
-//		String user1c = "prom_get_orders";
 		boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
 		if (isWindows) {
 			log.debug(System.getProperty("os.name").toLowerCase());
 			try {
-				log.trace("command=" + command + import1cUser);
-				p = r.exec(command + import1cUser);
+//				String command = path_1c+ " ENTERPRISE"+ " /D"+import1cBase+" /N"+import1cUser;
+//				log.trace("command=" + command);
+//				p = new ProcessBuilder(command).start();
+//				p = new ProcessBuilder().command(path_1c, "ENTERPRISE", "/D"+import1cBase,"/N"+import1cUser).start();
+				log.trace("importScript=" + importScript);
+				p = new ProcessBuilder().command(importScript).start();
+				
+				BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+				BufferedReader error = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+				String line = "";
+				while ((line = reader.readLine()) != null) {
+					log.debug("out:"+line);
+				}
+				while ((line = error.readLine()) != null) {
+					log.error("error:"+line);
+				}
+				
 				if (p.waitFor(5, TimeUnit.MINUTES)) {
 					// true - процесс нормально завершился
 					log.trace("процесс завершился нормально");
 				} else {
 					// false - не успел завершиться
-					log.trace("время вышло, процесс не завершился");
+					log.error("время вышло, процесс не завершился. Убиваем");
+					p.destroy();
 				}
-				// TODO читать входные потоки процесса
 
 				p.getInputStream().close();
 				p.getOutputStream().close();
@@ -175,8 +193,8 @@ public class OrdersService {
 
 	@Override
 	public String toString() {
-		return "OrdersTasks [promUaOrdersUrl=" + promUaOrdersUrl + ", promUaEnabled=" + promUaEnabled + ", command="
-				+ command + ",  import1cUser=" + import1cUser + "]";
+		return "OrdersTasks [promUaOrdersUrl=" + promUaOrdersUrl + ", promUaEnabled=" + promUaEnabled + ", path_1c="
+				+ path_1c + ",  import1cUser=" + import1cUser + "]";
 	}
 
 }

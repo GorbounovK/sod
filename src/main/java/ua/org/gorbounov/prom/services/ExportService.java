@@ -1,5 +1,7 @@
 package ua.org.gorbounov.prom.services;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -17,9 +19,13 @@ public class ExportService {
 	private Boolean promUaEnabled;
 
 	@Value("${prom.ua.1c.path}")
-	String command;
+	String path_1c;
+	@Value("${prom.ua.products.import.1c.base}")
+	String import1cBase;
 	@Value("${prom.ua.products.upload.1c.user}")
 	String upload1cUser;
+	@Value("${prom.ua.products.upload.script}")
+	String uploadScript;
 
 	@Async
 	@Scheduled(cron = "${prom.ua.products.upload.cron}")
@@ -36,16 +42,30 @@ public class ExportService {
 	 */
 	public void exec1cExportProducts() {
 		log.debug("------- exec1cExportProducts start -----------");
-		Runtime r = Runtime.getRuntime();
 		Process p = null;
-//		String user1c = "prom_export";
 		boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
 		if (isWindows) {
 			log.debug(System.getProperty("os.name").toLowerCase());
 			try {
-				log.trace("command=" + command + upload1cUser);
-				p = r.exec(command + upload1cUser);
-				p.waitFor(120, TimeUnit.MINUTES);
+//				log.trace("command=" + path_1c+ " ENTERPRISE"+ " /D"+import1cBase+" /N"+upload1cUser);
+//				p = new ProcessBuilder().command(command).start();
+//				p = new ProcessBuilder().command(path_1c, "ENTERPRISE", "/D"+import1cBase,"/N"+upload1cUser).start();
+				log.trace("uploadScript" +uploadScript);
+				p = new ProcessBuilder().command(uploadScript).start();
+
+				BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+				String line = null;
+				while ((line = reader.readLine()) != null) {
+					log.debug("out:"+line);
+				}
+				if (p.waitFor(120, TimeUnit.MINUTES)) {
+					// true - процесс нормально завершился
+					log.trace("процесс завершился нормально");
+				} else {
+					// false - не успел завершиться
+					log.trace("время вышло, процесс не завершился. Убиваем");
+					p.destroy();
+				}
 				p.getInputStream().close();
 				p.getOutputStream().close();
 				p.getErrorStream().close();

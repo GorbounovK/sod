@@ -1,38 +1,29 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SOD</title>
-<link data-th-href="@{/webjars/bulma/0.9.1/css/bulma.css}"
-	rel="stylesheet">
-<link rel="stylesheet"
-	data-th-href="@{/webjars/font-awesome/4.7.0/css/font-awesome.min.css}" />
-<!-- <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />  -->
-
+<head th:replace="fragments/header :: html_head">
 </head>
 
 <body class="has-background-light Site">
 
 	<!-- 	<h1>Hello world INDEX utf-8!</h1>-->
-	<section>
+	<section class="section pb-0">
 		<div class="container">
-			<nav class="navbar is-fixed-top is-primary" role="navigation"
-				aria-label="main navigation">
-				<div class="navbar-brand">
-					<a class="navbar-item" href="https://bulma.io"> <img
-						src="https://bulma.io/images/bulma-logo.png" width="112"
-						height="28">
-					</a> <a role="button" class="navbar-burger burger" aria-label="menu"
-						aria-expanded="false" data-target="navbarBasicExample"> <span
-						aria-hidden="true"></span> <span aria-hidden="true"></span> <span
-						aria-hidden="true"></span>
+			<nav class="navbar is-fixed-top is-primary" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand  ml-2">
+					<a class="navbar-item" href="https://bulma.io"> <img src="https://bulma.io/images/bulma-logo.png"
+							width="112" height="28">
+					</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
+						data-target="navbarBasicExample">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
 					</a>
 				</div>
 
 				<div id="navbarBasicExample" class="navbar-menu">
-					<div class="navbar-start">
+					<div class="navbar-start ">
 						<a class="navbar-item" href="/"> Home </a> <a class="navbar-item">
 							Документация </a>
 
@@ -48,11 +39,11 @@
 						</div>
 					</div>
 
-					<div class="navbar-end">
+					<div class="navbar-end mr-2">
 						<div class="navbar-item">
 							<div class="buttons">
 								<a class="button is-primary"> <strong>Sign up</strong>
-								</a> <a class="button is-light"> Log in </a>
+								</a> <a class="button is-light" href="/login"> Log in </a>
 							</div>
 						</div>
 					</div>
@@ -60,50 +51,90 @@
 			</nav>
 		</div>
 	</section>
-<!-- 	<section class="section">
-		<div class="container">
-			<div class="tabs">
-				<ul>
-					<li class="is-active"><a>prom.ua</a></li>
-					<li><a>emag.cn.ua</a></li>
-					<li><a>zakupka.com</a></li>
-				</ul>
-			</div>
-		</div>
- --><!-- 		<div class="container">
-			<a class="button is-primary" href="/category/list">Все категории</a>
-			<a class="button is-danger" href="/category/deleteAll"><span>Delete</span>
-				<span class="icon is-small"> <i class="fas fa-trash"></i>
-			</span></a> <a class="button is-primary" href="/category/importXML">Импорт
-				из XML</a>
-		</div>
-	</section>
+
+	<div class="section pt-3">
+		<div class="columns">
+			<!-- колонка с меню навигации -->
+			<div class="column is-2">
+				<aside class="menu">
+					<p class="menu-label">
+						Обмены информацией
+					</p>
+					<ul class="menu-list">
+						<li><a>prom.ua</a>
+							<ul>
+								<li><a href="#">Импорт заказов</a></li>
+								<li><a href="#">Экспорт прайса</a></li>
+							</ul>
+						</li>
+						<li><a>e-mag.cn.ua</a>
+							<ul>
+								<li><a>Импорт заказов</a></li>
+								<li><a>Экспорт прайса</a></li>
+								<li><a>Экспорт остатков</a></li>
+								<li><a>Регламентные процедуры</a></li>
+							</ul>
+						</li>
+					</ul>
+					<p class="menu-label">
+						Administration
+					</p>
+					<!-- 					<ul class="menu-list">
+						<li><a>Team Settings</a></li>
+						<li>
+							<a class="is-active">Manage Your Team</a>
+							<ul>
+								<li><a>Members</a></li>
+								<li><a>Plugins</a></li>
+								<li><a>Add a member</a></li>
+							</ul>
+						</li>
+						<li><a>Invitations</a></li>
+						<li><a>Cloud Storage Environment Settings</a></li>
+						<li><a>Authentication</a></li>
+					</ul>
  -->
-	<section class="section Site-content">
-		<div class="container">
-			<div class="content">
-				<h2>Сервер обмена данными с внешними приложениями</h2>
+					<p class="menu-label">
+						Transactions
+					</p>
+					<!-- 					<ul class="menu-list">
+						<li><a>Payments</a></li>
+						<li><a>Transfers</a></li>
+						<li><a>Balance</a></li>
+					</ul> -->
+				</aside>
+			</div>
+			<div class="column">
+				<!-- основной блок -->
+				<section class="section Site-content pt-1">
+					<div class="container">
+						<div class="content">
+							<h2 class="title">Обмен с prom.ua</h2>
+						</div>
+					</div>
+					<div class="content">
+						<!-- 			<textarea class="textarea" rows="20" readonly th:field="*{ipFilter}">This content is readonly</textarea> -->
+						<textarea class="textarea" rows="10" readonly>содержимое sod.log</textarea>
+					</div>
+					<div class="control">
+						<form action="" method="get">
+							<div class="field is-grouped">
+								<div class="control">
+									<button class="button is-link">Submit</button>
+								</div>
+								<div class="field">
+									<p class="control">
+										<button class="button is-link is-light">Cancel</button>
+									</p>
+								</div>
+							</div>
+						</form>
+					</div>
+				</section>
 			</div>
 		</div>
-		<div class="content">
-			<!-- 			<textarea class="textarea" rows="20" readonly th:field="*{ipFilter}">This content is readonly</textarea> -->
-			<textarea class="textarea" rows="10" readonly>содержимое sod.log</textarea>
-		</div>
-		<div class="control">
-			<form action="" method="get">
-				<div class="field is-grouped">
-					<div class="control">
-						<button class="button is-link">Submit</button>
-					</div>
-					<div class="field">
-						<p class="control">
-							<button class="button is-link is-light">Cancel</button>
-						</p>
-					</div>
-				</div>
-			</form>
-		</div>
-	</section>
+	</div>
+	<div th:replace="fragments/footer :: footer"></div>
 </body>
 
 </html>

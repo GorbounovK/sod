@@ -1,5 +1,7 @@
 package ua.org.gorbounov.emag.services;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
@@ -17,6 +19,10 @@ public class EmagTasks {
 	@Value("${emag.enabled:false}")
 	private Boolean emagEnabled;
 
+	@Value("${prom.ua.1c.path}")
+	String path_1c;
+	@Value("${prom.ua.products.import.1c.base}")
+	String import1cBase;
 	@Value("${emag.orders.user1C}")
 	private String orders1Cuser;
 
@@ -57,16 +63,31 @@ public class EmagTasks {
 	 */
 	public void exec1cDownload() {
 		if (emagEnabled) {
-			String user1c = orders1Cuser;
 			log.debug("------- exec1cDownload start -----------");
-			Runtime r = Runtime.getRuntime();
+//			Runtime r = Runtime.getRuntime();
 			Process p = null;
 			try {
 				String command = "\"C:\\Program Files (x86)\\1Cv77\\BIN\\1cv7s.exe\" ENTERPRISE /DD:\\base\\cron /N"
-						+ user1c;
+						+ orders1Cuser;
 				log.trace("command=" + command);
-				p = r.exec(command);
-				p.waitFor();
+
+//				p = new ProcessBuilder().command(command).start();
+				p = new ProcessBuilder().command(path_1c, "ENTERPRISE", "/D"+import1cBase,"/N"+orders1Cuser).start();
+
+				BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+				String line = null;
+				while ((line = reader.readLine()) != null) {
+					log.debug("out:"+line);
+				}
+
+				if (p.waitFor(5, TimeUnit.MINUTES)) {
+					// true - процесс нормально завершился
+					log.debug("процесс завершился нормально");
+				} else {
+					// false - не успел завершиться
+					log.debug("время вышло, процесс не завершился");
+					p.destroy();
+				}
 				p.getInputStream().close();
 				p.getOutputStream().close();
 				p.getErrorStream().close();
@@ -94,12 +115,20 @@ public class EmagTasks {
 						+ user1c;
 				log.trace("command=" + command);
 				p = r.exec(command);
+				
+				BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+				String line = null;
+				while ((line = reader.readLine()) != null) {
+					log.debug("out:"+line);
+				}
+
 				if (p.waitFor(15, TimeUnit.MINUTES)) {
 					// true - процесс нормально завершился
 					log.trace("процесс завершился нормально");
 				} else {
 					// false - не успел завершиться
-					log.trace("время вышло, процесс не завершился");
+					log.trace("время вышло, процесс не завершился. Убиваем");
+					p.destroy();
 				}
 				p.getInputStream().close();
 				p.getOutputStream().close();

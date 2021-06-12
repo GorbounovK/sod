@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/header :: html_head">
+    <meta charset="UTF-8">
+    <title>5xx error</title>
+</head>
+
+<body>
+    <div class="container">
+        <div th:replace="fragments/header :: header">
+            Static header
+        </div>
+        <div>
+            <h2 class="title">Произошла ошибка на сервере</h2>
+        </div>
+        <div th:replace="fragments/footer :: footer">
+            Static footer
+        </div>
+    </div>
+</body>
+
+</html>
