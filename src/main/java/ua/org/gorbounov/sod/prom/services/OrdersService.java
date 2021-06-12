@@ -19,12 +19,14 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.NameValuePair;
 
 import org.apache.http.impl.client.HttpClients;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.log4j.Log4j2;
+import ua.org.gorbounov.sod.models.PromImportOrdersInfo;
 
 @Log4j2
 @Component
@@ -34,6 +36,9 @@ public class OrdersService {
 	@Value("${prom.ua.enabled:false}")
 	private Boolean promUaEnabled;
 
+	@Autowired
+	private PromImportOrdersInfo promImportOrdersInfo;
+	
 	@Value("${prom.ua.1c.path}")
 	String path_1c;
 	@Value("${prom.ua.products.import.1c.base}")
@@ -42,11 +47,15 @@ public class OrdersService {
 	String import1cUser;
 	@Value("${prom.ua.products.import.script}")
 	String importScript;
-
+	
+	@Value("${prom.ua.orders.download.cron}")
+	String promOrdersDownloadCron;
 
 	@PostConstruct
 	public void init() {
 		log.info(toString());
+		log.debug("promOrdersDownloadCron="+promOrdersDownloadCron);
+		promImportOrdersInfo.setCron(promOrdersDownloadCron);
 	}
 
 	@Async

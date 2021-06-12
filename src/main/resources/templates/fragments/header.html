@@ -5,15 +5,75 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>SOD</title>
 	<link data-th-href="@{/webjars/bulma/0.9.1/css/bulma.css}" rel="stylesheet">
-	<link data-th-href="@{/webjars/font-awesome/4.7.0/css/font-awesome.min.css}" rel="stylesheet"/>
+	<link rel="stylesheet" data-th-href="@{/webjars/font-awesome/4.7.0/css/font-awesome.min.css}" />
 	<script type="text/javascript" th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
 	<script type="text/javascript" th:src="@{/js/script.js}"></script>
+
 </head>
 
 <body>
-	<div th:fragment="header">
-		<!-- this is header -->
-		<nav class="navbar">
+	<div th:fragment="header" class="container">
+		<nav class="navbar is-fixed-top is-primary" role="navigation" aria-label="main navigation">
+			<div class="navbar-brand  ml-2">
+				<!-- 				<a class="navbar-item" href="https://bulma.io"> <img src="https://bulma.io/images/bulma-logo.png"
+						width="112" height="28">
+				</a> -->
+				<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
+					data-target="navbarBasicExample">
+					<span aria-hidden="true"></span>
+					<span aria-hidden="true"></span>
+					<span aria-hidden="true"></span>
+				</a>
+			</div>
+
+			<div id="navbarBasicExample" class="navbar-menu">
+				<div class="navbar-start ">
+					<a class="navbar-item" href="/"> Home </a>
+					<!-- 					<a class="navbar-item">Документация</a> -->
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link"> prom.ua </a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/prom/importOrders"> Импорт заказов </a>
+							<a class="navbar-item" href="/prom/exportPrice">Экспорт прайса </a>
+						</div>
+					</div>
+
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link">e-mag.cn.ua</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item">Импорт заказов</a>
+							<a class="navbar-item">Экспорт прайса </a>
+							<a class="navbar-item">Экспорт остатков</a>
+							<a class="navbar-item">Регламентные процедуры</a>
+
+						</div>
+					</div>
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link"> More </a>
+
+						<div class="navbar-dropdown">
+							<a class="navbar-item"> About </a> <a class="navbar-item">
+								Jobs </a> <a class="navbar-item"> Contact </a>
+							<hr class="navbar-divider">
+							<a class="navbar-item"> Report an issue </a>
+						</div>
+					</div>
+				</div>
+
+				<div class="navbar-end mr-2">
+					<div class="navbar-item">
+						<div class="buttons">
+							<a class="button is-primary"> <strong>Sign up</strong>
+							</a> <a class="button is-light" href="/login"> Log in </a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</nav>
+	</div>
+
+	<!-- 	<div th:fragment="header">
+		<nav class="navbar navbar-inverse">
 			<div class="container">
 				<div class="navbar-header">
 					<a class="navbar-brand" th:href="@{/}">Spring Boot</a>
@@ -26,6 +86,7 @@
 			</div>
 		</nav>
 	</div>
+ -->
 
 </body>
 
