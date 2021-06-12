@@ -1,4 +1,4 @@
-package ua.org.gorbounov.emag.services;
+package ua.org.gorbounov.sod.emag.services;
 
 import java.io.File;
 import java.io.FileInputStream;

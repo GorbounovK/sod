@@ -1,4 +1,4 @@
-package ua.org.gorbounov.emag.services;
+package ua.org.gorbounov.sod.emag.services;
 
 import java.io.IOException;
 import java.util.Calendar;

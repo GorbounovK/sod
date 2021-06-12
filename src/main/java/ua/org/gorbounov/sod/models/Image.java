@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ua.org.gorbounov.models;
+package ua.org.gorbounov.sod.models;
 
 import java.util.Calendar;
 import javax.persistence.Entity;

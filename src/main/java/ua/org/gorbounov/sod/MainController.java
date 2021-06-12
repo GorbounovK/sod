@@ -1,4 +1,4 @@
-package ua.org.gorbounov;
+package ua.org.gorbounov.sod;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,4 +1,4 @@
-package ua.org.gorbounov.demo.services;
+package ua.org.gorbounov.sod.services;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -10,7 +10,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Component
-public class DemoScheduledTasks {
+public class MainScheduledTasks {
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
 	@Scheduled(cron = "${cron.expression}")

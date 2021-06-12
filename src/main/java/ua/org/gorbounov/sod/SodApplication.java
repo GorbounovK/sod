@@ -1,4 +1,4 @@
-package ua.org.gorbounov;
+package ua.org.gorbounov.sod;
 
 import java.util.concurrent.Executor;
 
@@ -18,11 +18,11 @@ import lombok.extern.log4j.Log4j2;
 @SpringBootApplication
 @EnableScheduling
 @EnableAsync
-public class DemoApplication {
+public class SodApplication {
 //	private static Logger LOG = LogManager.getLogger(OrdersTasks.class);
 
 	public static void main(String[] args) {
-		SpringApplication.run(DemoApplication.class, args);
+		SpringApplication.run(SodApplication.class, args);
         log.info("=================================");
         log.info("Helo SOD!");
         log.info("------- Initialization Complete -----------");

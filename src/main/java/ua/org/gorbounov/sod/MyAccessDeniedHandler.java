@@ -1,4 +1,4 @@
-package ua.org.gorbounov;
+package ua.org.gorbounov.sod;
 
 import java.io.IOException;
 

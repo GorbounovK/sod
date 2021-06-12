@@ -1,4 +1,4 @@
-package ua.org.gorbounov.prom.services;
+package ua.org.gorbounov.sod.prom.services;
 
 import java.io.BufferedReader;
 import java.io.IOException;

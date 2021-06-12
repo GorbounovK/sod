@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ua.org.gorbounov.config;
+package ua.org.gorbounov.sod.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
