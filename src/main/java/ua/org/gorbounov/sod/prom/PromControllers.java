@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import lombok.extern.log4j.Log4j2;
 import ua.org.gorbounov.sod.models.PromImportOrdersInfo;
+import ua.org.gorbounov.sod.prom.services.OrdersService;
 
 @Controller
 @Log4j2
@@ -18,20 +19,31 @@ public class PromControllers {
 
 	@Autowired
 	private PromImportOrdersInfo promImportOrdersInfo;
+	
+	@Autowired
+	private OrdersService ordersService;
 
 	@PostMapping("/save_cron_import_orders")
 	public String save_cron_import_orders(@ModelAttribute PromImportOrdersInfo promImportOrdersInfo, Model model) {
 		log.debug("prom/save_cron_import_orders");
 		log.debug("cron_import_orders="+promImportOrdersInfo.getCron());
 		return "prom/ImportOrders";
-
 	}
+
 	@GetMapping("/importOrders")
 	public String importOrders(Model model) {
 		log.debug("prom/ImportOrders");
 		model.addAttribute("promImportOrdersInfo", promImportOrdersInfo);
 		return "prom/ImportOrders";
-
+	}
+	
+	@GetMapping("/getOrders")
+	public String getOrders(Model model) {
+		log.debug("prom/getOrders");
+		ordersService.exec1cCreateOrders();
+		model.addAttribute("promImportOrdersInfo", promImportOrdersInfo);
+		return "prom/ImportOrders";
+	
 	}
 	
 	@GetMapping("/exportPrice")

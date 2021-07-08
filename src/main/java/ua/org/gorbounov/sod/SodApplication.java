@@ -49,8 +49,8 @@ public class SodApplication {
 	  @Bean
 	  public Executor taskExecutor() {
 	    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-	    executor.setCorePoolSize(3);
-	    executor.setMaxPoolSize(3);
+	    executor.setCorePoolSize(6);
+	    executor.setMaxPoolSize(6);
 	    executor.setQueueCapacity(500);
 	    executor.setThreadNamePrefix("OrderTask-");
 	    executor.initialize();

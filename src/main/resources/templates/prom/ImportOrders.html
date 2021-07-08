@@ -1,44 +1,53 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="fragments/header :: html_head">
-    <title>Импорт заказов с prom.ua</title>
+<title>Импорт заказов с prom.ua</title>
 </head>
 
 <body>
 
-    <div th:replace="fragments/header :: header"></div>
+	<div th:replace="fragments/header :: header"></div>
 
-    <div class="section mt-3">
-        <h1 class="title">Импорт заказов с prom.ua</h1>
-        <div class="notification">
- <!--            <p th:text="'cron='+${{cron_import_orders}}"></p> -->
+	<div class="section mt-3">
+		<h1 class="title">Импорт заказов с prom.ua</h1>
+		<div class="notification mb-1">
+			<!--            <p th:text="'cron='+${{cron_import_orders}}"></p> -->
 
-            <form action="#" th:action="@{/prom/save_cron_import_orders}" method="post" th:object="${promImportOrdersInfo}">
-                <div class="field-body">
-                	<fieldset disabled>
-                    <div class="field has-addons">
-                        <div class="control">
-                            <input type="text" class="input" th:field="*{cron}"
-                                placeholder="cron expresions">
-                        </div>
-                        <div class="control">
-                            <button class="button is-info">Изменить</button>
-                        </div>
-                    </div>
-                    </fieldset>
-                </div>
-            </form>
+			<form action="#" th:action="@{/prom/save_cron_import_orders}"
+				method="post" th:object="${promImportOrdersInfo}">
+				<div class="field-body">
+					<fieldset disabled>
+						<div class="field has-addons">
+							<div class="control">
+								<input type="text" class="input" th:field="*{cron}"
+									placeholder="cron expresions">
+							</div>
+							<div class="control">
+								<button class="button is-info">Изменить</button>
+							</div>
+						</div>
+					</fieldset>
+				</div>
+			</form>
 
-        </div>
-        <div class="box">
-            <button class="button is-primary">Получить заказы</button>
-            <button class="button ">Обновить логи</button>
-            <form th:action="@{/login}" method="post"></form>
-        </div>
-    </div>
+		</div>
+		<div class="box pt-1">
+				<a class="button is-primary" href="/prom/getOrders">Получить заказы</a>
+				<button class="button">Обновить логи</button>
+<!-- 			<form th:action="@{/prom/getOrders}" method="get">
+			</form> -->
+		</div>
+		<div class="content">
+			<!-- 			<textarea class="textarea" rows="20" readonly th:field="*{ipFilter}">This content is readonly</textarea> -->
+			<textarea class="textarea" rows="10" readonly
+				placeholder="содержимое sod.log"></textarea>
+		</div>
 
-    <div th:replace="fragments/footer :: footer"></div>
+	</div>
+
+	<div th:replace="fragments/footer :: footer"></div>
 
 </body>
 
