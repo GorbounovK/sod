@@ -1,50 +1,76 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="fragments/header :: html_head">
-<title>Импорт заказов с prom.ua</title>
+	<title>Импорт заказов с prom.ua</title>
 </head>
 
 <body>
 
 	<div th:replace="fragments/header :: header"></div>
 
-	<div class="section mt-3">
-		<h1 class="title">Импорт заказов с prom.ua</h1>
-		<div class="notification mb-1">
-			<!--            <p th:text="'cron='+${{cron_import_orders}}"></p> -->
+	<div class="section container mt-3">
+		<div class="columns">
+			<div class="column is-4 is-hidden-mobile">
+				<div th:replace="fragments/nav_left :: nav_left"></div>
+			</div>
+			<div class="column">
+				<!-- основной контент -->
+				<h1 class="title">Импорт заказов с prom.ua</h1>
+				<div class="notification mb-1">
+					<!--            <p th:text="'cron='+${{cron_import_orders}}"></p> -->
 
-			<form action="#" th:action="@{/prom/save_cron_import_orders}"
-				method="post" th:object="${promImportOrdersInfo}">
-				<div class="field-body">
-					<fieldset disabled>
-						<div class="field has-addons">
-							<div class="control">
-								<input type="text" class="input" th:field="*{cron}"
-									placeholder="cron expresions">
-							</div>
-							<div class="control">
-								<button class="button is-info">Изменить</button>
-							</div>
+					<form action="#" th:action="@{/prom/save_cron_import_orders}" method="post"
+						th:object="${promImportOrdersInfo}">
+						<div class="field-body">
+							<fieldset disabled>
+								<div class="field has-addons">
+									<div class="control">
+										<input type="text" class="input" th:field="*{cron}"
+											placeholder="cron expresions">
+									</div>
+									<div class="control">
+										<button class="button is-info">Изменить</button>
+									</div>
+								</div>
+							</fieldset>
 						</div>
-					</fieldset>
+					</form>
+
 				</div>
-			</form>
-
+				<div class="box pt-1">
+					<a class="button is-primary" href="/prom/getOrders">Получить
+						заказы</a>
+					<button class="button">Обновить логи</button>
+				</div>
+				<div class="content">
+					<!-- 					<div th:text="${promImportOrdersInfo.resultExecution}">
+					</div>-->
+					<table class="table table is-hoverable is-striped">
+						<thead>
+							<tr>
+								<th>Время запуска</th>
+								<th>Результат</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+ 								<td width="30%"
+									th:text="${#dates.format(promImportOrdersInfo.lastExecution,'dd-MM-yyyy HH:mm:ss')}">
+								</td>
+<!--  								<td width="30%"
+									th:text="${promImportOrdersInfo.lastExecution}">
+								</td> -->
+								<td th:text="${promImportOrdersInfo.resultExecution}">
+									<!-- <textarea class="textarea" rows="5" readonly
+										th:field="${promImportOrdersInfo.resultExecution}">This content is readonly</textarea> -->
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
 		</div>
-		<div class="box pt-1">
-				<a class="button is-primary" href="/prom/getOrders">Получить заказы</a>
-				<button class="button">Обновить логи</button>
-<!-- 			<form th:action="@{/prom/getOrders}" method="get">
-			</form> -->
-		</div>
-		<div class="content">
-			<!-- 			<textarea class="textarea" rows="20" readonly th:field="*{ipFilter}">This content is readonly</textarea> -->
-			<textarea class="textarea" rows="10" readonly
-				placeholder="содержимое sod.log"></textarea>
-		</div>
-
 	</div>
 
 	<div th:replace="fragments/footer :: footer"></div>

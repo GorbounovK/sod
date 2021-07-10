@@ -9,59 +9,15 @@
 	<section class="section pb-0">
 		<!-- top navigation menu -->
 		<div th:replace="fragments/header :: header"></div>
+		<!-- ent  top navigation menu-->
 	</section>
 
-	<div class="section pt-3">
+	<div class="section container pt-3">
+		<!-- start main context -->
 		<div class="columns">
 			<!-- колонка с меню навигации -->
 			<div class="column is-4 is-hidden-mobile">
-				<aside class="menu">
-					<p class="menu-label">
-						Обмены информацией
-					</p>
-					<ul class="menu-list">
-						<li><a>prom.ua</a>
-							<ul>
-								<li><a href="/prom/importOrders">Импорт заказов</a></li>
-								<li><a href="/prom/exportPrice">Экспорт прайса</a></li>
-							</ul>
-						</li>
-						<li><a>e-mag.cn.ua</a>
-							<ul>
-								<li><a>Импорт заказов</a></li>
-								<li><a>Экспорт прайса</a></li>
-								<li><a>Экспорт остатков</a></li>
-								<li><a>Регламентные процедуры</a></li>
-							</ul>
-						</li>
-					</ul>
-					<p class="menu-label">
-						Administration
-					</p>
-					<!-- 					<ul class="menu-list">
-						<li><a>Team Settings</a></li>
-						<li>
-							<a class="is-active">Manage Your Team</a>
-							<ul>
-								<li><a>Members</a></li>
-								<li><a>Plugins</a></li>
-								<li><a>Add a member</a></li>
-							</ul>
-						</li>
-						<li><a>Invitations</a></li>
-						<li><a>Cloud Storage Environment Settings</a></li>
-						<li><a>Authentication</a></li>
-					</ul>
- -->
-					<p class="menu-label">
-						Transactions
-					</p>
-					<!-- 					<ul class="menu-list">
-						<li><a>Payments</a></li>
-						<li><a>Transfers</a></li>
-						<li><a>Balance</a></li>
-					</ul> -->
-				</aside>
+					<div th:replace="fragments/nav_left :: nav_left"></div>
 			</div>
 			<div class="column">
 				<!-- основной блок -->
@@ -73,7 +29,8 @@
 					</div>
 					<div class="content">
 						<!-- 			<textarea class="textarea" rows="20" readonly th:field="*{ipFilter}">This content is readonly</textarea> -->
-						<textarea class="textarea" rows="10" readonly placeholder="содержимое sod.log"></textarea>
+						<textarea class="textarea" rows="10" readonly
+							placeholder="содержимое sod.log"></textarea>
 					</div>
 					<div class="control">
 						<form action="" method="get">
@@ -92,39 +49,37 @@
 				</section>
 			</div>
 		</div>
+		<!-- end main context -->
+
 	</div>
 	<div class="tile is-ancestor">
 		<div class="tile">
 			<!-- Add content or other tiles -->
-			<div class="box">
-				Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam, quisquam. Voluptatibus eaque dolorem ut ab
-				voluptates sapiente, magnam totam officiis autem quidem, saepe qui? Porro consequatur quidem ullam
-				tempore ad!
-			</div>
+			<div class="box">Lorem ipsum dolor sit amet consectetur
+				adipisicing elit. Nam, quisquam. Voluptatibus eaque dolorem ut ab
+				voluptates sapiente, magnam totam officiis autem quidem, saepe qui?
+				Porro consequatur quidem ullam tempore ad!</div>
 		</div>
 		<div class="tile">
 			<!-- Add content or other tiles -->
-			<div class="box">
-				Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam, quisquam. Voluptatibus eaque dolorem ut ab
-				voluptates sapiente, magnam totam officiis autem quidem, saepe qui? Porro consequatur quidem ullam
-				tempore ad!
-			</div>
+			<div class="box">Lorem ipsum dolor sit amet consectetur
+				adipisicing elit. Nam, quisquam. Voluptatibus eaque dolorem ut ab
+				voluptates sapiente, magnam totam officiis autem quidem, saepe qui?
+				Porro consequatur quidem ullam tempore ad!</div>
 		</div>
 		<div class="tile">
 			<!-- Add content or other tiles -->
-			<div class="box">
-				Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam, quisquam. Voluptatibus eaque dolorem ut ab
-				voluptates sapiente, magnam totam officiis autem quidem, saepe qui? Porro consequatur quidem ullam
-				tempore ad!
-			</div>
+			<div class="box">Lorem ipsum dolor sit amet consectetur
+				adipisicing elit. Nam, quisquam. Voluptatibus eaque dolorem ut ab
+				voluptates sapiente, magnam totam officiis autem quidem, saepe qui?
+				Porro consequatur quidem ullam tempore ad!</div>
 		</div>
 		<div class="tile">
 			<!-- Add content or other tiles -->
-			<div class="box">
-				Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam, quisquam. Voluptatibus eaque dolorem ut ab
-				voluptates sapiente, magnam totam officiis autem quidem, saepe qui? Porro consequatur quidem ullam
-				tempore ad!
-			</div>
+			<div class="box">Lorem ipsum dolor sit amet consectetur
+				adipisicing elit. Nam, quisquam. Voluptatibus eaque dolorem ut ab
+				voluptates sapiente, magnam totam officiis autem quidem, saepe qui?
+				Porro consequatur quidem ullam tempore ad!</div>
 		</div>
 	</div>
 	<div th:replace="fragments/footer :: footer"></div>

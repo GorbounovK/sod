@@ -11,6 +11,10 @@ import javax.annotation.PostConstruct;
 import java.util.Objects;
 
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -154,6 +158,9 @@ public class OrdersService {
 	 */
 	public void exec1cCreateOrders() {
 		log.debug("------- exec1cCreateOrders start -----------");
+		promImportOrdersInfo.setLastExecution(new Date());
+		log.debug("установлено время запуска = "+promImportOrdersInfo.getLastExecution());
+
 		Process p = null;
 		boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
 		if (isWindows) {
@@ -192,8 +199,10 @@ public class OrdersService {
 				log.error(e.getLocalizedMessage());
 			}
 			log.info("Загрузка с prom.ua завершилась с кодом возврата - " + p.exitValue());
+			promImportOrdersInfo.setResultExecution("Загрузка с prom.ua завершилась с кодом возврата - " + p.exitValue());
 		} else {
 			log.debug("не windows");
+			promImportOrdersInfo.setResultExecution("не windows");
 		}
 
 		log.debug("------- exec1cCreateOrders complete -----------");
@@ -206,4 +215,7 @@ public class OrdersService {
 				+ path_1c + ",  import1cUser=" + import1cUser + "]";
 	}
 
+//	public String getResultAction() {
+//		return "all right";
+//	}
 }

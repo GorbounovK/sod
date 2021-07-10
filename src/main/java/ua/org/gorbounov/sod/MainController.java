@@ -12,18 +12,18 @@ public class MainController {
 	@GetMapping(value = {"/","/index"})
 	public String index() {
 		log.debug("/index");
-		return "/index";
+		return "index";
 	}
 	
 	@GetMapping("/login")
     public String login() {
 		log.debug("/login");
-       return "/login";
+       return "login";
     }
  
     @GetMapping("/403")
     public String error403() {
 		log.debug("/403");
-      return "/error/403";
+      return "error/403";
     }
 }

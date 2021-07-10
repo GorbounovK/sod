@@ -41,6 +41,7 @@ public class PromControllers {
 	public String getOrders(Model model) {
 		log.debug("prom/getOrders");
 		ordersService.exec1cCreateOrders();
+//		String result = ordersService.getResultAction();
 		model.addAttribute("promImportOrdersInfo", promImportOrdersInfo);
 		return "prom/ImportOrders";
 	
