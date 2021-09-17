@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import lombok.extern.log4j.Log4j2;
 import ua.org.gorbounov.sod.models.PromImportOrdersInfo;
+import ua.org.gorbounov.sod.models.PromOrdersEntity;
 import ua.org.gorbounov.sod.prom.services.OrdersService;
+import ua.org.gorbounov.sod.repositories.PromImportOrdersInfoRepozitories;
 
 @Controller
 @Log4j2
@@ -19,6 +21,9 @@ public class PromControllers {
 
 	@Autowired
 	private PromImportOrdersInfo promImportOrdersInfo;
+	
+	@Autowired
+	private PromImportOrdersInfoRepozitories promImportOrdersRepositories;
 	
 	@Autowired
 	private OrdersService ordersService;

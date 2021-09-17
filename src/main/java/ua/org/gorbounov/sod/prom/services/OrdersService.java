@@ -11,10 +11,7 @@ import javax.annotation.PostConstruct;
 import java.util.Objects;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
-
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -31,6 +28,8 @@ import org.springframework.stereotype.Component;
 
 import lombok.extern.log4j.Log4j2;
 import ua.org.gorbounov.sod.models.PromImportOrdersInfo;
+import ua.org.gorbounov.sod.models.PromOrdersEntity;
+import ua.org.gorbounov.sod.repositories.PromImportOrdersInfoRepozitories;
 
 @Log4j2
 @Component
@@ -42,6 +41,9 @@ public class OrdersService {
 
 	@Autowired
 	private PromImportOrdersInfo promImportOrdersInfo;
+	@Autowired
+	PromImportOrdersInfoRepozitories repository;
+
 	
 	@Value("${prom.ua.1c.path}")
 	String path_1c;
@@ -59,6 +61,7 @@ public class OrdersService {
 	public void init() {
 		log.info(toString());
 		log.debug("promOrdersDownloadCron="+promOrdersDownloadCron);
+		//TODO
 		promImportOrdersInfo.setCron(promOrdersDownloadCron);
 	}
 
@@ -84,9 +87,7 @@ public class OrdersService {
 			log.trace("outPutFolder =" + outPutFolder);
 
 		} catch (Exception e) {
-			// TODO: handle exception
 			log.error(e);
-//                 e.printStackTrace();
 		}
 		log.debug("------- dowloadOrders Complete -----------");
 
@@ -158,8 +159,8 @@ public class OrdersService {
 	 */
 	public void exec1cCreateOrders() {
 		log.debug("------- exec1cCreateOrders start -----------");
-		promImportOrdersInfo.setLastExecution(new Date());
-		log.debug("установлено время запуска = "+promImportOrdersInfo.getLastExecution());
+		PromOrdersEntity promImportOrdersEntity = new PromOrdersEntity();//.setLastExecution(new Date());
+		promImportOrdersEntity.setLastExecution(new Date());
 
 		Process p = null;
 		boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
@@ -199,12 +200,14 @@ public class OrdersService {
 				log.error(e.getLocalizedMessage());
 			}
 			log.info("Загрузка с prom.ua завершилась с кодом возврата - " + p.exitValue());
-			promImportOrdersInfo.setResultExecution("Загрузка с prom.ua завершилась с кодом возврата - " + p.exitValue());
+			promImportOrdersEntity.setResultExecution("Загрузка с prom.ua завершилась с кодом возврата - " + p.exitValue());
 		} else {
 			log.debug("не windows");
-			promImportOrdersInfo.setResultExecution("не windows");
+			promImportOrdersEntity.setResultExecution("не windows");
 		}
-
+		repository.save(promImportOrdersEntity);
+		log.debug("установлено время запуска = "+promImportOrdersEntity.getLastExecution());
+		log.debug("id = "+promImportOrdersEntity.getId());
 		log.debug("------- exec1cCreateOrders complete -----------");
 
 	}

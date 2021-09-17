@@ -43,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		
 	    http.csrf().disable()
         .authorizeRequests()
-        .antMatchers("/", "/index", "/prom/**", "/about", "/webjars/**","/js/**").permitAll()
+        .antMatchers("/", "/index", "/prom/**", "/about", "/webjars/**","/js/**", "/h2-console/**").permitAll()
         .antMatchers("/admin/**",  "/actuator/**").hasAnyRole("ADMIN")
         .antMatchers("/user/**").hasAnyRole("USER")
         .anyRequest().authenticated()
@@ -59,7 +59,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .permitAll()
         .and()
         .exceptionHandling().accessDeniedHandler(accessDeniedHandler);
-	}
+	    
+	    //добавка для работы h2-console
+	    http.headers().frameOptions().disable();	}
 	
     // создаем пользоватлелей, admin и user
     @Autowired
