@@ -174,8 +174,8 @@ public class OrdersService {
 				log.trace("importScript=" + importScript);
 				p = new ProcessBuilder().command(importScript).start();
 				
-				BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-				BufferedReader error = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+				BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream(), "cp866"));
+				BufferedReader error = new BufferedReader(new InputStreamReader(p.getErrorStream(), "cp866"));
 				String line = "";
 				while ((line = reader.readLine()) != null) {
 					log.debug("out:"+line);
