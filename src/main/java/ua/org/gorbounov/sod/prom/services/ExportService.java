@@ -53,7 +53,7 @@ public class ExportService {
 				log.trace("uploadScript" +uploadScript);
 				p = new ProcessBuilder().command(uploadScript).start();
 
-				BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+				BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream(), "cp866"));
 				String line = null;
 				while ((line = reader.readLine()) != null) {
 					log.debug("out:"+line);
@@ -72,7 +72,7 @@ public class ExportService {
 			} catch (Exception e) {
 				log.error(e.getLocalizedMessage());
 			}
-			log.info("Выгрука на prom.ua завершилась с кодом возврата - " + p.exitValue());
+			log.info("Выгрузка на prom.ua завершилась с кодом возврата - " + p.exitValue());
 		} else {
 			log.debug("не windows");
 		}

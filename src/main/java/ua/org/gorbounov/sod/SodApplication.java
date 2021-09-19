@@ -25,13 +25,7 @@ public class SodApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SodApplication.class, args);
-        log.info("=================================");
-        log.info("Helo SOD!");
-        log.info("------- Initialization Complete -----------");
-        log.debug("-------debug Initialization Complete -----------");
-        log.trace("-------trace Initialization Complete -----------");
-        log.error("-------error Initialization Complete -----------");
-	}
+ 	}
 
 	@Bean
 	public CommandLineRunner commandLineRunner(ApplicationContext ctx) {

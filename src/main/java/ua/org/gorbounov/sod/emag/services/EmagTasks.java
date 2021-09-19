@@ -74,7 +74,7 @@ public class EmagTasks {
 //				p = new ProcessBuilder().command(command).start();
 				p = new ProcessBuilder().command(path_1c, "ENTERPRISE", "/D"+import1cBase,"/N"+orders1Cuser).start();
 
-				BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+				BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream(), "cp866"));
 				String line = null;
 				while ((line = reader.readLine()) != null) {
 					log.debug("out:"+line);
@@ -116,7 +116,7 @@ public class EmagTasks {
 				log.trace("command=" + command);
 				p = r.exec(command);
 				
-				BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+				BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream(), "cp866"));
 				String line = null;
 				while ((line = reader.readLine()) != null) {
 					log.debug("out:"+line);
