@@ -2,10 +2,14 @@ package ua.org.gorbounov.sod;
 
 import java.util.concurrent.Executor;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.info.BuildProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -21,11 +25,12 @@ import lombok.extern.log4j.Log4j2;
 @EnableScheduling
 @EnableAsync
 public class SodApplication {
-//	private static Logger LOG = LogManager.getLogger(OrdersTasks.class);
+	@Autowired
+	BuildProperties buildProperties;
 
 	public static void main(String[] args) {
 		SpringApplication.run(SodApplication.class, args);
- 	}
+	}
 
 	@Bean
 	public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
@@ -41,16 +46,20 @@ public class SodApplication {
 
 		};
 	}
-	
-	  @Bean
-	  public Executor taskExecutor() {
-	    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-	    executor.setCorePoolSize(6);
-	    executor.setMaxPoolSize(6);
-	    executor.setQueueCapacity(500);
-	    executor.setThreadNamePrefix("OrderTask-");
-	    executor.initialize();
-	    return executor;
-	  }
+
+	/*
+	 * @Bean public Executor taskExecutor() { ThreadPoolTaskExecutor executor = new
+	 * ThreadPoolTaskExecutor(); executor.setCorePoolSize(6);
+	 * executor.setMaxPoolSize(6); executor.setQueueCapacity(500);
+	 * executor.setThreadNamePrefix("OrderTask-"); executor.initialize(); return
+	 * executor; }
+	 */
+	@PostConstruct
+	private void logVersion() {
+		log.info("Name " + buildProperties.getName());
+		log.info("Version " + buildProperties.getVersion());
+		log.info(buildProperties.get("time"));
+		log.info(buildProperties.getGroup());
+	}
 
 }
