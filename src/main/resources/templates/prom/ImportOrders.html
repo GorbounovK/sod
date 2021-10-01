@@ -20,7 +20,7 @@
 				<div class="notification mb-1">
 					<!--            <p th:text="'cron='+${{cron_import_orders}}"></p> -->
 
-					<form action="#" th:action="@{/prom/save_cron_import_orders}" method="post"
+					<!-- 					<form action="#" th:action="@{/prom/save_cron_import_orders}" method="post"
 						th:object="${promImportOrdersInfo}">
 						<div class="field-body">
 							<fieldset disabled>
@@ -35,39 +35,44 @@
 								</div>
 							</fieldset>
 						</div>
-					</form>
+					</form> -->
 
 				</div>
 				<div class="box pt-1">
 					<a class="button is-primary" href="/prom/getOrders">Получить
 						заказы</a>
-					<button class="button">Обновить логи</button>
+					<button class="button" href="/prom/refreshLogs">Обновить логи</button>
 				</div>
 				<div class="content">
-					<!-- 					<table class="table table is-hoverable is-striped">
-						<thead>
-							<tr>
-								<th>Время запуска</th>
-								<th>Результат</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td width="30%"
-									th:text="${#dates.format(promImportOrdersInfo.lastExecution,'dd-MM-yyyy HH:mm:ss')}">
-								</td>
-								<td th:text="${promImportOrdersInfo.resultExecution}">
-								</td>
-							</tr>
-						</tbody>
-					</table>
- -->
+					<div th:unless="${#lists.isEmpty(ordersInfoEntity)}">
+						<table class="table table is-hoverable is-striped">
+							<thead>
+								<tr>
+									<th>id</th>
+									<th>Время запуска</th>
+									<th>Результат</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="orderEntyti : ${ordersInfoEntity}">
+									<td th:text="${orderEntyti.id}">
+									</td>
+									<td width="30%"
+										th:text="${#dates.format(orderEntyti.lastExecution,'dd-MM-yyyy HH:mm:ss')}">
+									</td>
+									<td th:text="${orderEntyti.resultExecution}">
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<!-- </div> -->
+
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 
-	<div th:replace="fragments/footer :: footer"></div>
+		<div th:replace="fragments/footer :: footer"></div>
 
 </body>
 

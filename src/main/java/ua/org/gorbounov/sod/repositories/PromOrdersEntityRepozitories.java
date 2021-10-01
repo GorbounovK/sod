@@ -12,6 +12,6 @@ import org.springframework.stereotype.Repository;
 import ua.org.gorbounov.sod.models.PromOrdersEntity;
 
 @Repository
-public interface PromImportOrdersInfoRepozitories extends PagingAndSortingRepository<PromOrdersEntity, Long>{
-
+public interface PromOrdersEntityRepozitories extends PagingAndSortingRepository<PromOrdersEntity, Long>{
+//    List<PromOrdersEntity> findAll(Pageable pageable);
 }

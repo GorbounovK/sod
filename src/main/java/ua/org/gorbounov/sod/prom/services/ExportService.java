@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,14 +20,16 @@ public class ExportService {
 	@Value("${prom.ua.enabled:false}")
 	private Boolean promUaEnabled;
 
-	@Value("${prom.ua.1c.path}")
+	@Value("${prom.ua.1c.path:}")
 	String path_1c;
-	@Value("${prom.ua.products.import.1c.base}")
+	@Value("${prom.ua.products.import.1c.base:}")
 	String import1cBase;
-	@Value("${prom.ua.products.upload.1c.user}")
+	@Value("${prom.ua.products.upload.1c.user:}")
 	String upload1cUser;
-	@Value("${prom.ua.products.upload.script}")
+	@Value("${prom.ua.products.upload.script:}")
 	String uploadScript;
+	@Value("${prom.ua.products.upload.cron}")
+	String promProductUploadCron;
 
 	@Async
 	@Scheduled(cron = "${prom.ua.products.upload.cron}")
@@ -77,6 +81,18 @@ public class ExportService {
 			log.debug("не windows");
 		}
 		log.debug("------- exec1cExportProducts complete -----------");
+	}
+	@Override
+	public String toString() {
+		return "prom.ExportService " + System.lineSeparator()+
+				"promUaEnabled=" + promUaEnabled + System.lineSeparator()+
+				"prom.ua.products.upload.cron=" + promProductUploadCron + System.lineSeparator()+
+				"prom.ua.products.upload.scrip=" + uploadScript + System.lineSeparator()+
+				"-------------------";
+	}
+	@PostConstruct
+	public void init() {
+		log.info(toString());
 	}
 
 }
