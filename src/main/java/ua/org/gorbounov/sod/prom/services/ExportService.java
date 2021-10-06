@@ -2,16 +2,24 @@ package ua.org.gorbounov.sod.prom.services;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.log4j.Log4j2;
+import ua.org.gorbounov.sod.models.PromExportPriceEntity;
+import ua.org.gorbounov.sod.models.PromExportPriceInfo;
+import ua.org.gorbounov.sod.models.PromImportOrdersInfo;
+import ua.org.gorbounov.sod.models.PromOrdersEntity;
+import ua.org.gorbounov.sod.repositories.PromExportPriceEnityRepozitories;
+import ua.org.gorbounov.sod.repositories.PromOrdersEntityRepozitories;
 
 @Log4j2
 @Component
@@ -30,15 +38,33 @@ public class ExportService {
 	String uploadScript;
 	@Value("${prom.ua.products.upload.cron}")
 	String promProductUploadCron;
+	
+	@Autowired
+	private PromExportPriceInfo promExportPriceInfo;
+	@Autowired
+	private PromExportPriceEnityRepozitories repository;
+	PromExportPriceEntity promExportPriceEntity;
 
 	@Async
 	@Scheduled(cron = "${prom.ua.products.upload.cron}")
 	public void exportProductSheduledTask() {
 		log.debug("promUaEnabled = " + promUaEnabled);
+		long startTime = System.currentTimeMillis();
+		promExportPriceEntity = new PromExportPriceEntity();
+		promExportPriceEntity.setLastExecution(new Date());
 		if (promUaEnabled) {
 			log.debug("getOrdersSheduledTask run successfully...");
 			exec1cExportProducts();
 		}
+		long endTime = System.currentTimeMillis();
+		log.debug("endTime {} - startTime {}", endTime, startTime);
+		log.info("Total execution time: " + (endTime - startTime) + "ms");
+		long executionTime = endTime - startTime;
+		String executionTimeString = String.valueOf(executionTime)+ " ms";
+		log.debug("------- exportProductSheduledTask complete -----------");
+		promExportPriceEntity.setExecutionTime(executionTimeString);
+		repository.save(promExportPriceEntity);
+
 	}
 
 	/**
@@ -77,8 +103,11 @@ public class ExportService {
 				log.error(e.getLocalizedMessage());
 			}
 			log.info("Выгрузка на prom.ua завершилась с кодом возврата - " + p.exitValue());
+			promExportPriceEntity.setResultExecution(
+					promExportPriceEntity.getResultExecution() + "1C завершилась с кодом возврата - " + p.exitValue());
 		} else {
 			log.debug("не windows");
+			promExportPriceEntity.setResultExecution(promExportPriceEntity.getResultExecution() + "Не windows");
 		}
 		log.debug("------- exec1cExportProducts complete -----------");
 	}
@@ -93,6 +122,8 @@ public class ExportService {
 	@PostConstruct
 	public void init() {
 		log.info(toString());
+		log.debug("promExportPriceCron=" + promProductUploadCron);
+		promExportPriceInfo.setCron(promProductUploadCron);
 	}
 
 }

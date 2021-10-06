@@ -1,3 +1,6 @@
+/**
+ * 
+ */
 package ua.org.gorbounov.sod.models;
 
 import java.util.Date;
@@ -9,13 +12,15 @@ import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.springframework.stereotype.Component;
-
 import lombok.extern.log4j.Log4j2;
 
+/**
+ * @author gk
+ *
+ */
 @Log4j2
 @Entity
-public class PromOrdersEntity {
+public class PromExportPriceEntity {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer id;
@@ -58,6 +63,4 @@ public class PromOrdersEntity {
 	public void setExecutionTime(String executionTime) {
 		this.executionTime = executionTime;
 	}
-	
-	
 }

@@ -16,7 +16,7 @@
             </div>
             <div class="column">
                 <!-- основной контент -->
-                <h1 class="title">Экспорт прайса на prom.u</h1>
+                <h1 class="title">Экспорт прайса на prom.ua</h1>
                 <!-- Информация о времени запуска-->
                 <div class="notification m-1 p-1">
                     <form action="#" th:action="@{/prom/save_cron_import_orders}" method="post"
@@ -39,10 +39,37 @@
                 <!-- Верхние кнопки-->
                 <div class="box p-1 m-1">
                     <a class="button is-primary" href="/prom/exportPrice">Выгрузить прайс</a>
-                    <a class="button" href="/prom/refreshLogs">Обновить логи</a>
+                    <a class="button" href="/prom/refreshLogsExportPrice">Обновить логи</a>
+                </div>
+                <div class="content">
+                    <div th:unless="${#lists.isEmpty(exportPriceEntity)}">
+                        <table class="table table is-hoverable is-striped is-bordered">
+                            <thead>
+                                <tr>
+                                    <th>id</th>
+                                    <th>Время запуска</th>
+                                    <th>Результат</th>
+                                    <th>Длительность</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="exportEntyti : ${exportPriceEntity}">
+                                    <td th:text="${exportEntyti.id}">
+                                    </td>
+                                    <td width="30%"
+                                        th:text="${#dates.format(exportEntyti.lastExecution,'dd-MM-yyyy HH:mm:ss')}">
+                                    </td>
+                                    <td th:text="${exportEntyti.resultExecution}">
+                                    </td>
+                                    <td th:text="${exportEntyti.executionTime}">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- </div> -->
+                    </div>
                 </div>
             </div>
-
         </div>
 
         <div th:replace="fragments/footer :: footer"></div>

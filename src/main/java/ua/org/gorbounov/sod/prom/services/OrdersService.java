@@ -1,11 +1,16 @@
 package ua.org.gorbounov.sod.prom.services;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.net.URL;
-
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.security.cert.CertPathValidatorException;
@@ -23,27 +28,47 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import java.util.Objects;
 
 import java.util.Arrays;
 import java.util.Date;
 
+import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpsURL;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.client.HttpClient;
-import org.apache.http.NameValuePair;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.TrustStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -65,7 +90,7 @@ public class OrdersService {
 	@Autowired
 	private PromImportOrdersInfo promImportOrdersInfo;
 	@Autowired
-	PromOrdersEntityRepozitories repository;
+	private PromOrdersEntityRepozitories repository;
 
 	@Value("${prom.ua.1c.path}")
 	String path_1c;
@@ -76,6 +101,9 @@ public class OrdersService {
 	@Value("${prom.ua.products.import.script}")
 	String importScript;
 
+	@Value("${prom.ua.path}")
+	private String promUaPath;
+	
 	@Value("${prom.ua.orders.download.cron}")
 	String promOrdersDownloadCron;
 
@@ -89,7 +117,6 @@ public class OrdersService {
 	public void init() {
 		log.info(toString());
 		log.debug("promOrdersDownloadCron=" + promOrdersDownloadCron);
-		// TODO
 		promImportOrdersInfo.setCron(promOrdersDownloadCron);
 	}
 
@@ -104,95 +131,27 @@ public class OrdersService {
 			log.debug("getOrdersSheduledTask run successfully...");
 			try {
 				getXmlFromUrl();
-			}catch (CertPathValidatorException e){
-				log.error("Reaso "+e.getReason());
-				log.error("stack : "+e.getStackTrace());
+
+			} catch (IOException e) {
+				log.error("IOException: " + e.getLocalizedMessage());
+				log.error("stack : " + ExceptionUtils.getStackTrace(e));
 			} catch (Exception e) {
 				log.error(e.getLocalizedMessage());
-				log.error("stack : "+e.getStackTrace());
+				log.error("stack : " + ExceptionUtils.getStackTrace(e));
 			}
 			exec1cCreateOrders();
 		}
 		long endTime = System.currentTimeMillis();
 		log.debug("endTime {} - startTime {}", endTime, startTime);
 		log.info("Total execution time: " + (endTime - startTime) + "ms");
+		long executionTime = endTime - startTime;
+		String executionTimeString = String.valueOf(executionTime)+ " ms";
 		log.debug("------- getOrdersSheduledTask complete -----------");
+		promImportOrdersEntity.setExecutionTime(executionTimeString);
 		repository.save(promImportOrdersEntity);
 
 	}
 
-	/**
-	*
-	*/
-	private void dowloadOrders() {
-		log.debug("------- start dowloadOrders -------");
-		try {
-			String result = sendPOST();
-			log.trace("result =" + result);
-			String outPutFolder = "${prom.ua.orders.download.cron}"; // mProps.getProperty("spot2r_path") +
-																		// File.separator + "orders" + File.separator;
-			log.trace("outPutFolder =" + outPutFolder);
-
-		} catch (Exception e) {
-			log.error(e);
-		}
-		log.debug("------- dowloadOrders Complete -----------");
-
-	}
-
-	/*
-	 * 
-	 * 
-	 */
-	private String sendPOST() throws IOException {
-
-		String result = "";
-		String url = promUaOrdersUrl;// "http://" + mProps.getProperty("spot2_server") + "/getfiles";
-		log.trace("url=" + url);
-
-		HttpPost post = new HttpPost(url);
-
-		try {
-			HttpClient httpClient = HttpClients.createDefault();
-			HttpResponse response = httpClient.execute(post);
-
-			int responseCode = response.getStatusLine().getStatusCode();
-			log.trace("responseCode=" + responseCode);
-
-			if (responseCode >= 200 & responseCode < 300) {
-				HttpEntity entity = response.getEntity();
-//				Header headers = entity.getContentType();
-//				log.trace("ContentType="+headers);
-//
-//				long contentLength = entity.getContentLength();
-//				log.trace("contentLength=" + contentLength);
-
-				log.trace("<HEADERS>");
-				Header[] allHeaders = response.getAllHeaders();
-				for (Header header : allHeaders) {
-					log.trace(header.getName() + "=" + header.getValue());
-				}
-				log.trace("</HEADERS>");
-
-//				String name = response.getFirstHeader("Content-Disposition").getValue();
-				Optional<String> fileName = Arrays.stream(response.getFirstHeader("Content-Disposition").getElements())
-						.map(element -> element.getParameterByName("filename")).filter(Objects::nonNull)
-						.map(NameValuePair::getValue).findFirst();
-				String fileNameString;
-				if (fileName.isPresent()) {
-					fileNameString = fileName.get();
-				} else {
-					fileNameString = "";
-				}
-				log.trace(fileNameString);
-
-			}
-		} catch (Exception e) {
-			log.error(e);
-		}
-
-		return result;
-	}
 
 	/**
 	 * @param xmlDocumentUrl
@@ -207,49 +166,89 @@ public class OrdersService {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 
-		URL url = new URL(xmlDocumentUrl);
-		HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-		connection.setHostnameVerifier(new NoopHostnameVerifier());
-//		print_https_cert(connection);
-//		print_content(connection);
+		Document doc = dBuilder.newDocument();
+		try {
+//			print_https_cert(connection);
+//			print_content(connection);
 
-		InputStream is = connection.getInputStream();
-
-//		Document doc = dBuilder.parse(new URL(xmlDocumentUrl).openStream());
-		Document doc = dBuilder.parse(is);
-		Element eElement = (Element) doc.getElementsByTagName("orders").item(0);
-		log.debug("XML date = " + eElement.getAttribute("date"));
-		NodeList orders = doc.getElementsByTagName("order");
-		int ordersCount = orders.getLength();
-		log.debug("ordersCount = {}", ordersCount);
-		for (int i = 0; i < orders.getLength(); i++) {
-			Node order = orders.item(i);
-			Element eOrder = (Element) order;
-			String id = eOrder.getAttribute("id");
-			String state = eOrder.getAttribute("state");
-			if (state.equals("new")) {
-				log.debug("Новый заказ {}", id);
-				countNewOrders++;
-			} else if (state.equals("accepted")) {
-				countAcceptedOrders++;
-			} else if (state.equals("paid")) {
-				countPaidOrders++;
+			InputStream is = getInputStreamFromHttpsUrl(promUaOrdersUrl);
+			doc = dBuilder.parse(is);
+//			log.trace(doc.toString());
+			Element eElement = (Element) doc.getElementsByTagName("orders").item(0);
+			log.debug("XML date = " + eElement.getAttribute("date"));
+			NodeList orders = doc.getElementsByTagName("order");
+			int ordersCount = orders.getLength();
+			log.debug("ordersCount = {}", ordersCount);
+			for (int i = 0; i < orders.getLength(); i++) {
+				Node order = orders.item(i);
+				Element eOrder = (Element) order;
+				String id = eOrder.getAttribute("id");
+				String state = eOrder.getAttribute("state");
+				if (state.equals("new")) {
+					log.debug("Новый заказ {}", id);
+					countNewOrders++;
+				} else if (state.equals("accepted")) {
+					countAcceptedOrders++;
+				} else if (state.equals("paid")) {
+					countPaidOrders++;
+				}
 			}
+			TransformerFactory tranFactory = TransformerFactory.newInstance();
+			Transformer aTransformer = tranFactory.newTransformer();
+			aTransformer.setOutputProperty(OutputKeys.ENCODING, "utf-8");
+			Source src = new DOMSource(doc);
+			Result dest = new StreamResult(new File(promUaPath+"/orders.xml"));
+			aTransformer.transform(src, dest);
+			log.info("Файл " + promUaPath+"/orders.xml" + " записан.");
+					
+//			Writer stringWriter = new StringWriter();
+//			StreamResult streamResult = new StreamResult(stringWriter);
+//			aTransformer.transform(src, streamResult);        
+//			String result = stringWriter.toString();	
+//			log.trace(result);
+
+			promImportOrdersEntity.setResultExecution("Новых заказов " + countNewOrders + ", " + "принятых "
+					+ countAcceptedOrders + ", оплаченных " + countPaidOrders + ". ");
+			log.info("Новых заказов " + countNewOrders + ", " + "принятых " + countAcceptedOrders + ", оплаченных "
+					+ countPaidOrders + ". ");
+			//
+
+		} finally {
+//			httpget.releaseConnection();
 		}
-		promImportOrdersEntity.setResultExecution("Новых заказов " + countNewOrders + ", " + "принятых "
-				+ countAcceptedOrders + ", оплаченных " + countPaidOrders + ". ");
-		log.info("Новых заказов " + countNewOrders + ", " + "принятых "
-				+ countAcceptedOrders + ", оплаченных " + countPaidOrders + ". ");
-		//
-//	    XMLParserLiaison xpathSupport = new XMLParserLiaisonDefault();
-//	    XPathProcessor xpathParser = new XPathProcessorImpl(xpathSupport);
-//	    PrefixResolver prefixResolver =new PrefixResolverDefault(source.getDocumentElement());
-		is.close();
-		connection.disconnect();
-		log.debug("connection {}",connection);
 		return doc;
 	}
 
+	/**
+	 * @param xmlDocumentUrl
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
+	private InputStream getInputStreamFromHttpsUrl(String urlOverHttps) throws ClientProtocolException, IOException {
+		CloseableHttpClient httpClient = HttpClients.custom().setSSLHostnameVerifier(new NoopHostnameVerifier())
+				.build();
+		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+		requestFactory.setHttpClient(httpClient);
+
+//		ResponseEntity<String> res = new RestTemplate(requestFactory).exchange(urlOverHttps, HttpMethod.GET, null,
+//				String.class);
+		ResponseEntity<Resource> res = new RestTemplate(requestFactory).exchange(urlOverHttps, HttpMethod.GET, null,
+				Resource.class);
+
+		log.trace("StatusCode {}", res.getStatusCodeValue());
+//		log.trace("getBody {}", res.getBody());
+//		InputStream is = IOUtils.toInputStream(res.getBody(), "utf-8");
+//		InputStream is = new ByteArrayInputStream(res.getBody().getBytes(StandardCharsets.UTF_8));
+		InputStream is = res.getBody().getInputStream();
+//		String result = IOUtils.toString(is, "utf-8");
+//		log.trace("InputStream {}", result);
+		return is;
+	}
+
+	/**
+	 * @param con
+	 */
 	private void print_content(HttpsURLConnection con) {
 		if (con != null) {
 
@@ -289,7 +288,7 @@ public class OrdersService {
 					log.debug("Cert Public Key Algorithm : " + cert.getPublicKey().getAlgorithm());
 					log.debug("Cert Public Key Format : " + cert.getPublicKey().getFormat());
 					log.debug("\n");
-					log.debug("Cert toString : "+cert.toString());
+					log.debug("Cert toString : " + cert.toString());
 				}
 
 			} catch (SSLPeerUnverifiedException e) {
@@ -380,6 +379,5 @@ public class OrdersService {
 //	public String getResultAction() {
 //		return "all right";
 //	}
-	
 
 }
