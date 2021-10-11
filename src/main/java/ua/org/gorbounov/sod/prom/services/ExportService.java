@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import lombok.extern.log4j.Log4j2;
+import ua.org.gorbounov.sod.Utils;
 import ua.org.gorbounov.sod.models.PromExportPriceEntity;
 import ua.org.gorbounov.sod.models.PromExportPriceInfo;
 import ua.org.gorbounov.sod.models.PromImportOrdersInfo;
@@ -22,7 +24,7 @@ import ua.org.gorbounov.sod.repositories.PromExportPriceEnityRepozitories;
 import ua.org.gorbounov.sod.repositories.PromOrdersEntityRepozitories;
 
 @Log4j2
-@Component
+@Service
 public class ExportService {
 
 	@Value("${prom.ua.enabled:false}")
@@ -45,8 +47,7 @@ public class ExportService {
 	private PromExportPriceEnityRepozitories repository;
 	PromExportPriceEntity promExportPriceEntity;
 
-	@Async
-	@Scheduled(cron = "${prom.ua.products.upload.cron}")
+	@Async("threadPoolTaskExecutor")
 	public void exportProductSheduledTask() {
 		log.debug("promUaEnabled = " + promUaEnabled);
 		long startTime = System.currentTimeMillis();
@@ -58,11 +59,11 @@ public class ExportService {
 		}
 		long endTime = System.currentTimeMillis();
 		log.debug("endTime {} - startTime {}", endTime, startTime);
-		log.info("Total execution time: " + (endTime - startTime) + "ms");
 		long executionTime = endTime - startTime;
-		String executionTimeString = String.valueOf(executionTime)+ " ms";
+		String durationString = Utils.millisToShortDHMS(executionTime);
+		log.info("Total execution time: " + durationString);
 		log.debug("------- exportProductSheduledTask complete -----------");
-		promExportPriceEntity.setExecutionTime(executionTimeString);
+		promExportPriceEntity.setExecutionTime(durationString);
 		repository.save(promExportPriceEntity);
 
 	}

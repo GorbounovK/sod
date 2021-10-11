@@ -17,10 +17,15 @@ import ua.org.gorbounov.sod.models.PromImportOrdersInfo;
 import ua.org.gorbounov.sod.models.PromOrdersEntity;
 import ua.org.gorbounov.sod.prom.services.ExportPriceInfoService;
 import ua.org.gorbounov.sod.prom.services.ExportService;
+import ua.org.gorbounov.sod.prom.services.ImagesService;
 import ua.org.gorbounov.sod.prom.services.ImportOrdersInfoService;
 import ua.org.gorbounov.sod.prom.services.OrdersService;
 import ua.org.gorbounov.sod.repositories.PromOrdersEntityRepozitories;
 
+/**
+ * @author gk
+ *
+ */
 @Controller
 @Log4j2
 @RequestMapping("/prom")
@@ -42,7 +47,16 @@ public class PromControllers {
 	private OrdersService ordersService;
 	@Autowired
 	private ExportService exportService;
+	
+	@Autowired
+	private ImagesService imageService;
 
+
+	/**
+	 * @param promImportOrdersInfo
+	 * @param model
+	 * @return
+	 */
 	@PostMapping("/save_cron_import_orders")
 	public String save_cron_import_orders(@ModelAttribute PromImportOrdersInfo promImportOrdersInfo, Model model) {
 		log.debug("prom/save_cron_import_orders");
@@ -96,9 +110,16 @@ public class PromControllers {
 	@GetMapping("/exportImagesInfo")
 	public String exportImagesInfo() {
 		log.debug("prom/exportImagesInfo");
-		return "/prom/ExportImagesInfo";
+		return "prom/ExportImagesInfo";
 	}
 	
+	@GetMapping("/exportImages")
+	public String exportImages() {
+		log.debug("prom/exportImages");
+		imageService.imagesScheduledTask();
+		return "prom/ExportImagesInfo";  //ExportImagesInfo.html
+	}
+
 	@GetMapping("/refreshLogsOrders")
 	public String refreshLogs(Model model) {
 		String res = this.importOrders(model);

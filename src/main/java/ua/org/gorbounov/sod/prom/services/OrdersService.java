@@ -68,6 +68,7 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -75,12 +76,14 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import lombok.extern.log4j.Log4j2;
+import ua.org.gorbounov.sod.Utils;
 import ua.org.gorbounov.sod.models.PromImportOrdersInfo;
 import ua.org.gorbounov.sod.models.PromOrdersEntity;
 import ua.org.gorbounov.sod.repositories.PromOrdersEntityRepozitories;
 
 @Log4j2
-@Component
+//@Component
+@Service
 public class OrdersService {
 	@Value("${prom.ua.orders.url}")
 	private String promUaOrdersUrl;
@@ -103,7 +106,7 @@ public class OrdersService {
 
 	@Value("${prom.ua.path}")
 	private String promUaPath;
-	
+
 	@Value("${prom.ua.orders.download.cron}")
 	String promOrdersDownloadCron;
 
@@ -120,8 +123,7 @@ public class OrdersService {
 		promImportOrdersInfo.setCron(promOrdersDownloadCron);
 	}
 
-	@Async
-	@Scheduled(cron = "${prom.ua.orders.download.cron}")
+	@Async("threadPoolTaskExecutor")
 	public void getOrdersSheduledTask() {
 		long startTime = System.currentTimeMillis();
 		promImportOrdersEntity = new PromOrdersEntity();
@@ -142,16 +144,16 @@ public class OrdersService {
 			exec1cCreateOrders();
 		}
 		long endTime = System.currentTimeMillis();
-		log.debug("endTime {} - startTime {}", endTime, startTime);
-		log.info("Total execution time: " + (endTime - startTime) + "ms");
 		long executionTime = endTime - startTime;
-		String executionTimeString = String.valueOf(executionTime)+ " ms";
+		log.debug("endTime {} - startTime {}", endTime, startTime);
+		String durationString = Utils.millisToShortDHMS(executionTime);
+		log.info("Total execution time: " + durationString);
+//		String executionTimeString = String.valueOf(executionTime);
 		log.debug("------- getOrdersSheduledTask complete -----------");
-		promImportOrdersEntity.setExecutionTime(executionTimeString);
+		promImportOrdersEntity.setExecutionTime(durationString);
 		repository.save(promImportOrdersEntity);
 
 	}
-
 
 	/**
 	 * @param xmlDocumentUrl
@@ -197,10 +199,10 @@ public class OrdersService {
 			Transformer aTransformer = tranFactory.newTransformer();
 			aTransformer.setOutputProperty(OutputKeys.ENCODING, "utf-8");
 			Source src = new DOMSource(doc);
-			Result dest = new StreamResult(new File(promUaPath+"/orders.xml"));
+			Result dest = new StreamResult(new File(promUaPath + "/orders.xml"));
 			aTransformer.transform(src, dest);
-			log.info("Файл " + promUaPath+"/orders.xml" + " записан.");
-					
+			log.info("Файл " + promUaPath + "/orders.xml" + " записан.");
+
 //			Writer stringWriter = new StringWriter();
 //			StreamResult streamResult = new StreamResult(stringWriter);
 //			aTransformer.transform(src, streamResult);        
@@ -376,6 +378,7 @@ public class OrdersService {
 				+ importScript + System.lineSeparator() + "----------------";
 	}
 
+	
 //	public String getResultAction() {
 //		return "all right";
 //	}
