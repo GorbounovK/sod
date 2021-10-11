@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,11 +47,15 @@ public class ImagesService {
 	@Value("${prom.ua.images.ftp.password}")
 	String password;
 
+	@Value("${prom.ua.products.images.cron}")
+	String promImagesDownloadCron;
+
 	/**
 	 * 
 	 */
 	@Async("threadPoolTaskExecutor")
 	public void imagesScheduledTask() {
+		log.debug("------- imagesScheduledTask start -----------");
 		try {
 //		StopWatch timer = new StopWatch();
 			// получаем время последнего запуска
@@ -65,13 +71,15 @@ public class ImagesService {
 				attrs = Files.readAttributes(fileEntry, BasicFileAttributes.class);
 				log.debug("name {}, modificated {}", fileEntry.getFileName(), attrs.lastModifiedTime());
 				uploadImageToFtp(ftpClient, fileEntry.toFile(), fileEntry.getFileName().toString());
-				ftpClient.logout();
-				ftpClient.disconnect();
 			}
+			ftpClient.logout();
+			ftpClient.disconnect();
+			log.debug("ftpClient.disconnect");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		log.debug("------- imagesScheduledTask end -----------");
 
 	}
 
@@ -186,5 +194,16 @@ public class ImagesService {
 			return false;
 		}
 		return true;
+	}
+	@Override
+	public String toString() {
+		return "imagesScheduledTask " + System.lineSeparator() + "prom.ua.products.images.cron = " + promImagesDownloadCron
+				+ System.lineSeparator() + "prom.ua.images.local.path =" + pathImages + System.lineSeparator()
+				+ "----------------";
+	}
+	
+	@PostConstruct
+	public void init() {
+		log.info(toString());
 	}
 }
