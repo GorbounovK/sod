@@ -1,4 +1,4 @@
-package ua.org.gorbounov.sod.repositories;
+package ua.org.gorbounov.sod.prom.repositories;
 
 import java.util.Date;
 import java.util.List;
@@ -9,7 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
-import ua.org.gorbounov.sod.models.PromOrdersEntity;
+import ua.org.gorbounov.sod.prom.models.PromOrdersEntity;
 
 @Repository
 public interface PromOrdersEntityRepozitories extends PagingAndSortingRepository<PromOrdersEntity, Long>{

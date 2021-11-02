@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ua.org.gorbounov.sod.prom.services;
+package ua.org.gorbounov.sod.rozetka.services;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +14,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.log4j.Log4j2;
-import ua.org.gorbounov.sod.prom.models.PromExportPriceEntity;
-import ua.org.gorbounov.sod.prom.repositories.PromExportPriceEnityRepozitories;
+import ua.org.gorbounov.sod.rozetka.models.RozetkaExportPriceEntity;
+import ua.org.gorbounov.sod.rozetka.repositories.RozetkaExportPriceEnityRepozitories;
 
 /**
  * @author gk
@@ -23,20 +23,20 @@ import ua.org.gorbounov.sod.prom.repositories.PromExportPriceEnityRepozitories;
  */
 @Log4j2
 @Service
-public class ExportPriceInfoService {
+public class RozetkaExportPriceInfoService {
 	@Autowired
-	PromExportPriceEnityRepozitories repository;
+	RozetkaExportPriceEnityRepozitories repository;
 
-	public List<PromExportPriceEntity> getAllImportOrdersInfo(){
+	public List<RozetkaExportPriceEntity> getAllImportOrdersInfo(){
 		Pageable first20 = PageRequest.of(0, 10);
 		Pageable last10 = PageRequest.of(0, 10, Sort.by("id").descending());
 		
-		Page<PromExportPriceEntity> pagedResult = repository.findAll(last10);
+		Page<RozetkaExportPriceEntity> pagedResult = repository.findAll(last10);
 		log.trace("pagedResult.size {}",pagedResult.getSize());
 		if(pagedResult.hasContent()) {
 			return pagedResult.getContent();
 		} else {
-			return new ArrayList<PromExportPriceEntity>();
+			return new ArrayList<RozetkaExportPriceEntity>();
 		}
 
 	}

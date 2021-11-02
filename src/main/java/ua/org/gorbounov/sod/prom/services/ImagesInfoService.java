@@ -1,6 +1,3 @@
-/**
- * 
- */
 package ua.org.gorbounov.sod.prom.services;
 
 import java.util.ArrayList;
@@ -14,31 +11,26 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.log4j.Log4j2;
-import ua.org.gorbounov.sod.prom.models.PromExportPriceEntity;
-import ua.org.gorbounov.sod.prom.repositories.PromExportPriceEnityRepozitories;
+import ua.org.gorbounov.sod.models.ImageEntity;
+import ua.org.gorbounov.sod.prom.repositories.ImageRepositories;
 
-/**
- * @author gk
- *
- */
 @Log4j2
 @Service
-public class ExportPriceInfoService {
+public class ImagesInfoService {
 	@Autowired
-	PromExportPriceEnityRepozitories repository;
-
-	public List<PromExportPriceEntity> getAllImportOrdersInfo(){
-		Pageable first20 = PageRequest.of(0, 10);
+	ImageRepositories repository;
+	
+	public List<ImageEntity> getAllImportOrdersInfo(){
+//		Pageable first20 = PageRequest.of(0, 10);
 		Pageable last10 = PageRequest.of(0, 10, Sort.by("id").descending());
 		
-		Page<PromExportPriceEntity> pagedResult = repository.findAll(last10);
+		Page<ImageEntity> pagedResult = repository.findAll(last10);
 		log.trace("pagedResult.size {}",pagedResult.getSize());
 		if(pagedResult.hasContent()) {
 			return pagedResult.getContent();
 		} else {
-			return new ArrayList<PromExportPriceEntity>();
+			return new ArrayList<ImageEntity>();
 		}
 
 	}
-
 }

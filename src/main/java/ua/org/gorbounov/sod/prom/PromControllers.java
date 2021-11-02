@@ -1,4 +1,4 @@
-package ua.org.gorbounov.sod.prom.controllers;
+package ua.org.gorbounov.sod.prom;
 
 import java.util.List;
 
@@ -11,16 +11,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import lombok.extern.log4j.Log4j2;
-import ua.org.gorbounov.sod.models.PromExportPriceEntity;
-import ua.org.gorbounov.sod.models.PromExportPriceInfo;
-import ua.org.gorbounov.sod.models.PromImportOrdersInfo;
-import ua.org.gorbounov.sod.models.PromOrdersEntity;
+import ua.org.gorbounov.sod.models.ApplicationProperties;
+import ua.org.gorbounov.sod.models.ImageEntity;
+import ua.org.gorbounov.sod.prom.models.PromExportPriceEntity;
+import ua.org.gorbounov.sod.prom.models.PromExportPriceInfo;
+import ua.org.gorbounov.sod.prom.models.PromImportOrdersInfo;
+import ua.org.gorbounov.sod.prom.models.PromOrdersEntity;
+import ua.org.gorbounov.sod.prom.repositories.PromOrdersEntityRepozitories;
 import ua.org.gorbounov.sod.prom.services.ExportPriceInfoService;
 import ua.org.gorbounov.sod.prom.services.ExportService;
+import ua.org.gorbounov.sod.prom.services.ImagesInfoService;
 import ua.org.gorbounov.sod.prom.services.ImagesService;
 import ua.org.gorbounov.sod.prom.services.ImportOrdersInfoService;
 import ua.org.gorbounov.sod.prom.services.OrdersService;
-import ua.org.gorbounov.sod.repositories.PromOrdersEntityRepozitories;
 
 /**
  * @author gk
@@ -50,7 +53,10 @@ public class PromControllers {
 	
 	@Autowired
 	private ImagesService imageService;
-
+	@Autowired
+	private ImagesInfoService imagesInfoService;
+	@Autowired
+	private ApplicationProperties prop;
 
 	/**
 	 * @param promImportOrdersInfo
@@ -61,6 +67,7 @@ public class PromControllers {
 	public String save_cron_import_orders(@ModelAttribute PromImportOrdersInfo promImportOrdersInfo, Model model) {
 		log.debug("prom/save_cron_import_orders");
 		log.debug("cron_import_orders="+promImportOrdersInfo.getCron());
+		model.addAttribute("prop", prop);
 		return "prom/ImportOrders";
 	}
 
@@ -73,6 +80,7 @@ public class PromControllers {
 		log.debug("ordersInfoEntity.size {}",ordersInfoEntity.size());
 		model.addAttribute("promImportOrdersInfo", promImportOrdersInfo);
 		model.addAttribute("ordersInfoEntity", ordersInfoEntity);
+		model.addAttribute("prop", prop);
 		return "prom/ImportOrders";
 	}
 	
@@ -84,6 +92,7 @@ public class PromControllers {
 		List<PromOrdersEntity> ordersInfoEntity = ordersInfoService.getAllImportOrdersInfo();
 		model.addAttribute("promImportOrdersInfo", promImportOrdersInfo);
 		model.addAttribute("ordersInfoEntity", ordersInfoEntity);
+		model.addAttribute("prop", prop);
 		return "prom/ImportOrders";
 	
 	}
@@ -94,7 +103,8 @@ public class PromControllers {
 		List<PromExportPriceEntity> exportPriceEntity = exportPriceInfoService.getAllImportOrdersInfo();
 		model.addAttribute("exportPriceEntity",exportPriceEntity);
 		model.addAttribute("promExportPriceInfo", promExportPriceInfo);
-		return "prom/ExportPriceInfo";
+		model.addAttribute("prop", prop);
+	return "prom/ExportPriceInfo";
 		
 	}
 	
@@ -104,31 +114,46 @@ public class PromControllers {
 		log.debug("prom/ExportPrice");
 		exportService.exportProductSheduledTask();
 		model.addAttribute("promExportPriceInfo", promExportPriceInfo);
+		model.addAttribute("prop", prop);
 		return "prom/ExportPriceInfo";
 	}
 
 	@GetMapping("/exportImagesInfo")
-	public String exportImagesInfo() {
+	public String exportImagesInfo(Model model) {
 		log.debug("prom/exportImagesInfo");
+		List<ImageEntity> imageEntity = imagesInfoService.getAllImportOrdersInfo();
+		log.info("imageEntity.size()={}",imageEntity.size());
+		model.addAttribute("imageInfoEntity",imageEntity);
+		model.addAttribute("prop", prop);
 		return "prom/ExportImagesInfo";
 	}
 	
 	@GetMapping("/exportImages")
-	public String exportImages() {
+	public String exportImages(Model model) {
 		log.debug("prom/exportImages");
 		imageService.imagesScheduledTask();
+		model.addAttribute("prop", prop);
 		return "prom/ExportImagesInfo";  //ExportImagesInfo.html
+	}
+	
+	@GetMapping("/refreshLogsImages")
+	public String refreshLogsImages(Model model) {
+		String res = this.exportImagesInfo(model);
+		model.addAttribute("prop", prop);
+		return res;
 	}
 
 	@GetMapping("/refreshLogsOrders")
 	public String refreshLogs(Model model) {
 		String res = this.importOrders(model);
+		model.addAttribute("prop", prop);
 		return res;
 	}
 	@GetMapping("/refreshLogsExportPrice")
 	public String refreshLogsExportPric(Model model) {
 		String res = this.exportPriceInfo( model);
 		log.debug("/refreshLogsExportPrice - "+res);
+		model.addAttribute("prop", prop);
 		return res;
 	}
 

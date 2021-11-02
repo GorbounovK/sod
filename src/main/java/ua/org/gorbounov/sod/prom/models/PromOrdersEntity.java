@@ -1,4 +1,4 @@
-package ua.org.gorbounov.sod.models;
+package ua.org.gorbounov.sod.prom.models;
 
 import java.util.Date;
 
@@ -11,9 +11,11 @@ import javax.persistence.TemporalType;
 
 import org.springframework.stereotype.Component;
 
+import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
+@ToString
 @Entity
 public class PromOrdersEntity {
 	@Id

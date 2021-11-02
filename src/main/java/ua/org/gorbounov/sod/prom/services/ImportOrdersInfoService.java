@@ -14,8 +14,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.log4j.Log4j2;
-import ua.org.gorbounov.sod.models.PromOrdersEntity;
-import ua.org.gorbounov.sod.repositories.PromOrdersEntityRepozitories;
+import ua.org.gorbounov.sod.prom.models.PromOrdersEntity;
+import ua.org.gorbounov.sod.prom.repositories.PromOrdersEntityRepozitories;
 
 /**
  * @author gk

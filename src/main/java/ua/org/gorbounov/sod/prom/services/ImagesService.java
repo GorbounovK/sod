@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.NoRouteToHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,18 +18,24 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import lombok.extern.log4j.Log4j2;
+import ua.org.gorbounov.sod.Utils;
+import ua.org.gorbounov.sod.models.ImageEntity;
+import ua.org.gorbounov.sod.prom.repositories.ImageRepositories;
 
 /**
  * @author gk Реализует непосредственную работу с изображениями
@@ -50,12 +57,20 @@ public class ImagesService {
 	@Value("${prom.ua.products.images.cron}")
 	String promImagesDownloadCron;
 
+	@Autowired
+	private ImageRepositories repository;
+	ImageEntity imageEntity;
 	/**
 	 * 
 	 */
 	@Async("threadPoolTaskExecutor")
 	public void imagesScheduledTask() {
 		log.debug("------- imagesScheduledTask start -----------");
+		long startTime = System.currentTimeMillis();
+		imageEntity = new ImageEntity();
+		imageEntity.setLastUpload(new Date());
+		String resStringTotal="";
+		String resString="";
 		try {
 //		StopWatch timer = new StopWatch();
 			// получаем время последнего запуска
@@ -70,17 +85,31 @@ public class ImagesService {
 				BasicFileAttributes attrs;
 				attrs = Files.readAttributes(fileEntry, BasicFileAttributes.class);
 				log.debug("name {}, modificated {}", fileEntry.getFileName(), attrs.lastModifiedTime());
-				uploadImageToFtp(ftpClient, fileEntry.toFile(), fileEntry.getFileName().toString());
+				resString = uploadImageToFtp(ftpClient, fileEntry.toFile(), fileEntry.getFileName().toString());
+				resStringTotal = resStringTotal+resString+"<br>";
+//				imageEntity.setResultExecution(imageEntity.getResultExecution()+resString);
+				log.trace("resStringTotal {}",resStringTotal);
 			}
 			ftpClient.logout();
 			ftpClient.disconnect();
 			log.debug("ftpClient.disconnect");
+		} catch (NoRouteToHostException e) {
+			log.error("Сервер {} не доступен",server);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		log.info("Выгрузка изображений завершилась успешно");
+		long endTime = System.currentTimeMillis();
+		log.debug("endTime {} - startTime {}", endTime, startTime);
+		long executionTime = endTime - startTime;
+		String durationString = Utils.millisToShortDHMS(executionTime);
+		log.info("Total execution time: " + durationString);
+		imageEntity.setExecutionTime(durationString);
+		imageEntity.setResultExecution(resStringTotal);
+		repository.save(imageEntity);
+		log.trace("imageEntity={}",imageEntity.toString());
 		log.debug("------- imagesScheduledTask end -----------");
-
+		//		repository.
 	}
 
 	private FTPClient createFtpConnect() throws IOException {
@@ -105,6 +134,7 @@ public class ImagesService {
 		log.trace("К серверу успешло залогинились соединение");
 		ftpClient.enterLocalPassiveMode();
 		ftpClient.setControlEncoding("UTF-8");
+		ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 		log.trace("Открываем соединение");
 		return ftpClient;
 	}
@@ -159,8 +189,9 @@ public class ImagesService {
 	/**
 	 * выгружает изображени на удаленный ftp сервер
 	 */
-	public void uploadImageToFtp(FTPClient ftpClient, File imageFile, String remoteName)
+	public String uploadImageToFtp(FTPClient ftpClient, File imageFile, String remoteName)
 			throws FileNotFoundException, IOException {
+		String resString="";
 		InputStream is = new FileInputStream(imageFile);
 		String remoteDirectory = "/images/" + remoteName.substring(3, 6);
 		log.trace("remoteDirectory = {}", remoteDirectory);
@@ -172,11 +203,14 @@ public class ImagesService {
 				log.trace("папка {} создана", remoteDirectory);
 			}
 		}
+		log.trace("выгружаем {}",remoteDirectory+"/"+remoteName);
 		boolean res = ftpClient.storeFile(remoteDirectory+"/"+remoteName, is);
 		if (res) {
-			log.info("файл " + remoteName + " выгружен успешно");
+			log.info("файл " + remoteDirectory+"/"+remoteName + " выгружен успешно");
+			resString = remoteDirectory+"/"+remoteName + " выгружен";
 		} else {
 			log.error("не получилось выгрузить");
+			resString = "не получилось выгрузить "+remoteName;
 			String[] replyes = ftpClient.getReplyStrings();
 			if (replyes != null && replyes.length > 0) {
 				for (String aReply : replyes) {
@@ -185,6 +219,7 @@ public class ImagesService {
 			}
 		}
 		is.close();
+		return resString;
 	}
 
 	boolean checkDirectoryExists(FTPClient ftpClient, String dirPath) throws IOException {

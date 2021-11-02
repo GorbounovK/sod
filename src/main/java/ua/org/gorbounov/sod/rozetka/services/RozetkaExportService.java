@@ -1,4 +1,4 @@
-package ua.org.gorbounov.sod.prom.services;
+package ua.org.gorbounov.sod.rozetka.services;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -10,50 +10,41 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import ua.org.gorbounov.sod.Utils;
-import ua.org.gorbounov.sod.prom.models.PromExportPriceEntity;
-import ua.org.gorbounov.sod.prom.models.PromExportPriceInfo;
-import ua.org.gorbounov.sod.prom.models.PromImportOrdersInfo;
-import ua.org.gorbounov.sod.prom.models.PromOrdersEntity;
-import ua.org.gorbounov.sod.prom.repositories.PromExportPriceEnityRepozitories;
-import ua.org.gorbounov.sod.prom.repositories.PromOrdersEntityRepozitories;
+import ua.org.gorbounov.sod.rozetka.models.RozetkaExportPriceEntity;
+import ua.org.gorbounov.sod.rozetka.models.RozetkaExportPriceInfo;
+import ua.org.gorbounov.sod.rozetka.repositories.RozetkaExportPriceEnityRepozitories;
 
 @Log4j2
+@ToString
 @Service
-public class ExportService {
+public class RozetkaExportService {
 
-	@Value("${prom.ua.enabled:false}")
-	private Boolean promUaEnabled;
+	@Value("${rozetka.enabled:false}")
+	private Boolean rozetkaEnabled;
 
-	@Value("${prom.ua.1c.path:}")
-	String path_1c;
-	@Value("${prom.ua.products.import.1c.base:}")
-	String import1cBase;
-	@Value("${prom.ua.products.upload.1c.user:}")
-	String upload1cUser;
-	@Value("${prom.ua.products.upload.script:}")
+	@Value("${rozetka.ua.products.upload.script:}")
 	String uploadScript;
-	@Value("${prom.ua.products.upload.cron}")
-	String promProductUploadCron;
+	@Value("${rozetka.ua.products.upload.cron}")
+	String rozetkaProductUploadCron;
 	
 	@Autowired
-	private PromExportPriceInfo promExportPriceInfo;
+	private RozetkaExportPriceInfo rozetkaExportPriceInfo;
 	@Autowired
-	private PromExportPriceEnityRepozitories repository;
-	PromExportPriceEntity promExportPriceEntity;
+	private RozetkaExportPriceEnityRepozitories repository;
+	RozetkaExportPriceEntity rozetkaExportPriceEntity;
 
 	@Async("threadPoolTaskExecutor")
 	public void exportProductSheduledTask() {
-		log.debug("promUaEnabled = " + promUaEnabled);
+		log.debug("rozetkaEnabled = " + rozetkaEnabled);
 		long startTime = System.currentTimeMillis();
-		promExportPriceEntity = new PromExportPriceEntity();
-		promExportPriceEntity.setLastExecution(new Date());
-		if (promUaEnabled) {
+		rozetkaExportPriceEntity = new RozetkaExportPriceEntity();
+		rozetkaExportPriceEntity.setLastExecution(new Date());
+		if (rozetkaEnabled) {
 			log.debug("getOrdersSheduledTask run successfully...");
 			exec1cExportProducts();
 		}
@@ -63,9 +54,10 @@ public class ExportService {
 		String durationString = Utils.millisToShortDHMS(executionTime);
 		log.info("Total execution time: " + durationString);
 		log.debug("------- exportProductSheduledTask complete -----------");
-		promExportPriceEntity.setExecutionTime(durationString);
-		repository.save(promExportPriceEntity);
-
+		rozetkaExportPriceEntity.setExecutionTime(durationString);
+		repository.save(rozetkaExportPriceEntity);
+		log.trace("rozetkaExportPriceEntity={}",rozetkaExportPriceEntity.toString());
+		log.debug("------- exportProductSheduledTask complete -----------");
 	}
 
 	/**
@@ -103,28 +95,28 @@ public class ExportService {
 			} catch (Exception e) {
 				log.error(e.getLocalizedMessage());
 			}
-			log.info("Выгрузка на prom.ua завершилась с кодом возврата - " + p.exitValue());
-			promExportPriceEntity.setResultExecution(
-					promExportPriceEntity.getResultExecution() + "1C завершилась с кодом возврата - " + p.exitValue());
+			log.info("Выгрузка на rozetka.ua завершилась с кодом возврата - " + p.exitValue());
+			rozetkaExportPriceEntity.setResultExecution(
+					rozetkaExportPriceEntity.getResultExecution() + "1C завершилась с кодом возврата - " + p.exitValue());
 		} else {
 			log.debug("не windows");
-			promExportPriceEntity.setResultExecution(promExportPriceEntity.getResultExecution() + "Не windows");
+			rozetkaExportPriceEntity.setResultExecution(rozetkaExportPriceEntity.getResultExecution() + "Не windows");
 		}
 		log.debug("------- exec1cExportProducts complete -----------");
 	}
-	@Override
-	public String toString() {
-		return "prom.ExportService " + System.lineSeparator()+
-				"promUaEnabled=" + promUaEnabled + System.lineSeparator()+
-				"prom.ua.products.upload.cron=" + promProductUploadCron + System.lineSeparator()+
-				"prom.ua.products.upload.scrip=" + uploadScript + System.lineSeparator()+
-				"-------------------";
-	}
+//	@Override
+//	public String toString() {
+//		return "prom.ExportService " + System.lineSeparator()+
+//				"promUaEnabled=" + promUaEnabled + System.lineSeparator()+
+//				"prom.ua.products.upload.cron=" + promProductUploadCron + System.lineSeparator()+
+//				"prom.ua.products.upload.scrip=" + uploadScript + System.lineSeparator()+
+//				"-------------------";
+//	}
 	@PostConstruct
 	public void init() {
 		log.info(toString());
-		log.debug("promExportPriceCron=" + promProductUploadCron);
-		promExportPriceInfo.setCron(promProductUploadCron);
+//		log.debug("promExportPriceCron=" + promProductUploadCron);
+//		promExportPriceInfo.setCron(promProductUploadCron);
 	}
 
 }

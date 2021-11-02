@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="fragments/header :: html_head">
-<title>Экспорт изображений на prom.ua</title>
+	<title>Экспорт изображений на prom.ua</title>
 </head>
 
 <body>
@@ -11,7 +10,7 @@
 
 	<div class="section container mt-3">
 		<div class="columns">
-			<div class="column is-4 is-hidden-mobile">
+			<div class="column is-3 is-hidden-mobile">
 				<div th:replace="fragments/nav_left :: nav_left"></div>
 			</div>
 			<div class="column">
@@ -20,8 +19,38 @@
 				<!-- Информация о времени запуска-->
 				<!-- Верхние кнопки-->
 				<div class="box p-1 m-1">
-					<a class="button is-primary" href="/prom/exportImages">Выгрузить изображения</a> 
-		<!-- 			<a class="button" href="/prom/refreshLogsExportPrice">Обновить	логи</a> -->
+					<a class="button is-primary" href="/prom/exportImages">Выгрузить изображения</a>
+					<a class="button" href="/prom/refreshLogsImages">Обновить логи</a>
+				</div>
+
+				<div class="content">
+					<div th:unless="${#lists.isEmpty(imageInfoEntity)}">
+						<table class="table table is-hoverable is-striped is-bordered">
+							<thead>
+								<tr>
+									<th>id</th>
+									<th>Время запуска</th>
+									<th>Результат</th>
+									<th>Длительность</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="imageEntity : ${imageInfoEntity}">
+									<td th:text="${imageEntity.id}">
+									</td>
+									<td width="20%"
+										th:text="${#dates.format(imageEntity.lastUpload,'dd-MM-yyyy HH:mm:ss')}">
+									</td>
+									<td width="50%" th:utext="${imageEntity.resultExecution}">
+									</td>
+									<td th:text="${imageEntity.executionTime}">
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<!-- </div> -->
+
+					</div>
 				</div>
 
 			</div>

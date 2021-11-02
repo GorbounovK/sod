@@ -77,9 +77,9 @@ import org.w3c.dom.NodeList;
 
 import lombok.extern.log4j.Log4j2;
 import ua.org.gorbounov.sod.Utils;
-import ua.org.gorbounov.sod.models.PromImportOrdersInfo;
-import ua.org.gorbounov.sod.models.PromOrdersEntity;
-import ua.org.gorbounov.sod.repositories.PromOrdersEntityRepozitories;
+import ua.org.gorbounov.sod.prom.models.PromImportOrdersInfo;
+import ua.org.gorbounov.sod.prom.models.PromOrdersEntity;
+import ua.org.gorbounov.sod.prom.repositories.PromOrdersEntityRepozitories;
 
 @Log4j2
 //@Component

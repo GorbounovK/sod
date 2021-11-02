@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="fragments/header :: html_head">
-    <title>Экспорт прайса на prom.ua</title>
+    <title>Экспорт прайса на rozetka.ua</title>
 </head>
 
 <body>
@@ -16,10 +16,10 @@
             </div>
             <div class="column">
                 <!-- основной контент -->
-                <h1 class="title">Экспорт прайса на prom.ua</h1>
+                <h1 class="title">Экспорт прайса на rozetka.ua</h1>
                 <!-- Информация о времени запуска-->
                 <div class="notification m-1 p-1">
-                    <form action="#" th:action="@{/prom/save_cron_import_orders}" method="post"
+                    <!--                     <form action="#" th:action="@{/prom/save_cron_import_orders}" method="post"
                         th:object="${promExportPriceInfo}">
                         <div class="field-body">
                             <fieldset disabled>
@@ -34,12 +34,12 @@
                                 </div>
                             </fieldset>
                         </div>
-                    </form>
+                    </form> -->
                 </div>
                 <!-- Верхние кнопки-->
                 <div class="box p-1 m-1">
-                    <a class="button is-primary" href="/prom/exportPrice">Выгрузить прайс</a>
-                    <a class="button" href="/prom/refreshLogsExportPrice">Обновить логи</a>
+                    <a class="button is-primary" href="/rozetka/exportPrice">Выгрузить прайс</a>
+                    <a class="button" href="/rozetka/refreshLogsExportPrice">Обновить логи</a>
                 </div>
                 <div class="content">
                     <div th:unless="${#lists.isEmpty(exportPriceEntity)}">
@@ -54,14 +54,15 @@
                             </thead>
                             <tbody>
                                 <tr th:each="exportEntyti : ${exportPriceEntity}">
-                                    <td width="10%" th:text="${exportEntyti.id}">
+                                    <td th:text="${exportEntyti.id}">
                                     </td>
                                     <td width="20%"
                                         th:text="${#dates.format(exportEntyti.lastExecution,'dd-MM-yyyy HH:mm:ss')}">
                                     </td>
-                                    <td th:text="${exportEntyti.resultExecution}">
+                                    <td width="50%" 
+                                    	th:text="${exportEntyti.resultExecution}">
                                     </td>
-                                    <td width="5%" th:text="${exportEntyti.executionTime}">
+                                    <td th:text="${exportEntyti.executionTime}">
                                     </td>
                                 </tr>
                             </tbody>

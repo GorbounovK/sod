@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ua.org.gorbounov.sod.models;
+package ua.org.gorbounov.sod.rozetka.models;
 
 import java.util.Date;
 
@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -19,8 +20,9 @@ import lombok.extern.log4j.Log4j2;
  *
  */
 @Log4j2
+@ToString
 @Entity
-public class PromExportPriceEntity {
+public class RozetkaExportPriceEntity {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer id;
