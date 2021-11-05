@@ -30,7 +30,7 @@
 				<div class="navbar-start ">
 					<a class="navbar-item" href="/"> Home </a>
 					<!-- 					<a class="navbar-item">Документация</a> -->
-					<div class="navbar-item has-dropdown is-hoverable">
+					<div th:if="${prop.promEnabled}" class="navbar-item has-dropdown is-hoverable">
 						<a class="navbar-link"> prom.ua </a>
 						<div class="navbar-dropdown">
 							<a class="navbar-item" href="/prom/importOrders"> Импорт заказов </a>
@@ -39,7 +39,7 @@
 						</div>
 					</div>
 
-					<div class="navbar-item has-dropdown is-hoverable">
+					<div th:if="${prop.emagEnabled}" class="navbar-item has-dropdown is-hoverable">
 						<a class="navbar-link">e-mag.cn.ua</a>
 						<div class="navbar-dropdown">
 							<a class="navbar-item">Импорт заказов</a>
@@ -47,6 +47,13 @@
 							<a class="navbar-item">Экспорт остатков</a>
 							<a class="navbar-item">Регламентные процедуры</a>
 
+						</div>
+					</div>
+					<div th:if="${prop.rozetkaEnabled}" class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link">rozetka.ua</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item">Импорт заказов</a>
+							<a class="navbar-item" href="/rozetka/exportPriceInfo">Экспорт прайса</a>
 						</div>
 					</div>
 					<div class="navbar-item has-dropdown is-hoverable">

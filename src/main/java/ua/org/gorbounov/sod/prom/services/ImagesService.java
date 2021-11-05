@@ -56,6 +56,10 @@ public class ImagesService {
 
 	@Value("${prom.ua.products.images.cron}")
 	String promImagesDownloadCron;
+	@Value("${prom.ua.images.beginIndex}")
+	int promImageBeginIndex;
+	@Value("${prom.ua.images.endIndex}")
+	int promImageEndIndex;
 
 	@Autowired
 	private ImageRepositories repository;
@@ -170,7 +174,12 @@ public class ImagesService {
 			if (Files.isDirectory(p) || !Files.isReadable(p)) {
 				return false;
 			}
-
+			// include only jpg jpeg png
+			if ((!p.getFileName().toString().endsWith(".jpg")) && (!p.getFileName().toString().endsWith(".jpeg")) 
+					&& (!p.getFileName().toString().endsWith(".png"))) {
+				log.trace("файл {} пропускаем",p.getFileName());
+				return false; 
+			}
 			FileTime fileTime = basicFileAttributes.lastModifiedTime();
 			// negative if less, positive if greater
 			// 1 means fileTime equals or after the provided instant argument
@@ -193,7 +202,7 @@ public class ImagesService {
 			throws FileNotFoundException, IOException {
 		String resString="";
 		InputStream is = new FileInputStream(imageFile);
-		String remoteDirectory = "/images/" + remoteName.substring(3, 6);
+		String remoteDirectory = "/images/" + remoteName.substring(promImageBeginIndex, promImageEndIndex);
 		log.trace("remoteDirectory = {}", remoteDirectory);
 		if (checkDirectoryExists(ftpClient, remoteDirectory)) {
 			log.trace("папка {} существут", remoteDirectory);
