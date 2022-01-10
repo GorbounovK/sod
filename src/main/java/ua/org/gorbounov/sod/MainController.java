@@ -24,9 +24,10 @@ public class MainController {
 	}
 	
 	@GetMapping("/login")
-    public String login() {
+    public String login(Model model) {
 		log.debug("/login");
-       return "login";
+		model.addAttribute("prop", prop);      
+		return "login";
     }
  
     @GetMapping("/403")

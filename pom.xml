@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>ua.org.gorbounov</groupId>
 	<artifactId>sod</artifactId>
-	<version>0.1.24</version>
+	<version>0.1.25</version>
 	<packaging>jar</packaging>
 	<name>sod</name>
 	<description>SOD</description>

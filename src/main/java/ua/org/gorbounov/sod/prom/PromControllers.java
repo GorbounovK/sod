@@ -136,6 +136,13 @@ public class PromControllers {
 		return "prom/ExportImagesInfo";  //ExportImagesInfo.html
 	}
 	
+	@GetMapping("/exportAllImages")
+	public String exportAllImages(Model model) {
+		log.debug("prom/exportAllImages");
+		imageService.sendAllImagesToFtp();
+		model.addAttribute("prop", prop);
+		return "prom/ExportImagesInfo";  //ExportImagesInfo.html
+	}
 	@GetMapping("/refreshLogsImages")
 	public String refreshLogsImages(Model model) {
 		String res = this.exportImagesInfo(model);
