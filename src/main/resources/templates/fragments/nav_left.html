@@ -14,15 +14,23 @@
                 <li><a>prom.ua</a>
                     <ul>
                         <li><a href="/prom/importOrders">Импорт заказов</a></li>
-                        <li><a href="/prom/exportPrice">Экспорт прайса</a></li>
+                        <li><a href="/prom/exportPriceInfo">Экспорт прайса</a></li>
+                        <li><a href="/prom/exportImagesInfo">Экспорт картинок</a></li>
                     </ul>
                 </li>
-                <li><a>e-mag.cn.ua</a>
+
+                <li th:if="${prop.emagEnabled}"><a>e-mag.cn.ua</a>
                     <ul>
                         <li><a>Импорт заказов</a></li>
                         <li><a>Экспорт прайса</a></li>
                         <li><a>Экспорт остатков</a></li>
                         <li><a>Регламентные процедуры</a></li>
+                    </ul>
+                </li>
+                 <li th:if="${prop.rozetkaEnabled}"><a>rozetka.ua</a>
+                    <ul>
+                        <li><a>Импорт заказов</a></li>
+                        <li><a href="/rozetka/exportPriceInfo">Экспорт прайса</a></li>
                     </ul>
                 </li>
             </ul>

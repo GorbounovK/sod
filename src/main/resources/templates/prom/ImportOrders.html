@@ -11,16 +11,14 @@
 
 	<div class="section container mt-3">
 		<div class="columns">
-			<div class="column is-4 is-hidden-mobile">
+			<div class="column is-3 is-hidden-mobile">
 				<div th:replace="fragments/nav_left :: nav_left"></div>
 			</div>
 			<div class="column">
 				<!-- основной контент -->
 				<h1 class="title">Импорт заказов с prom.ua</h1>
-				<div class="notification mb-1">
-					<!--            <p th:text="'cron='+${{cron_import_orders}}"></p> -->
-
-					<!-- 					<form action="#" th:action="@{/prom/save_cron_import_orders}" method="post"
+				<div class="notification m-1 p-1">
+					<form action="#" th:action="@{/prom/save_cron_import_orders}" method="post"
 						th:object="${promImportOrdersInfo}">
 						<div class="field-body">
 							<fieldset disabled>
@@ -35,32 +33,35 @@
 								</div>
 							</fieldset>
 						</div>
-					</form> -->
+					</form>
 
 				</div>
-				<div class="box pt-1">
+				<div class="box p-1 m-1">
 					<a class="button is-primary" href="/prom/getOrders">Получить
 						заказы</a>
-					<button class="button" href="/prom/refreshLogs">Обновить логи</button>
+					<a class="button" href="/prom/refreshLogsOrders">Обновить логи</a>
 				</div>
 				<div class="content">
 					<div th:unless="${#lists.isEmpty(ordersInfoEntity)}">
-						<table class="table table is-hoverable is-striped">
+						<table class="table table is-hoverable is-striped is-bordered">
 							<thead>
 								<tr>
 									<th>id</th>
 									<th>Время запуска</th>
 									<th>Результат</th>
+									<th>Длительность</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr th:each="orderEntyti : ${ordersInfoEntity}">
 									<td th:text="${orderEntyti.id}">
 									</td>
-									<td width="30%"
+									<td width="20%"
 										th:text="${#dates.format(orderEntyti.lastExecution,'dd-MM-yyyy HH:mm:ss')}">
 									</td>
-									<td th:text="${orderEntyti.resultExecution}">
+									<td width="50%" th:text="${orderEntyti.resultExecution}">
+									</td>
+									<td th:text="${orderEntyti.executionTime}">
 									</td>
 								</tr>
 							</tbody>

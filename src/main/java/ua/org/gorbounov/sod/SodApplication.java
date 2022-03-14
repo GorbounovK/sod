@@ -54,6 +54,17 @@ public class SodApplication {
 	 * executor.setThreadNamePrefix("OrderTask-"); executor.initialize(); return
 	 * executor; }
 	 */
+	@Bean(name = "threadPoolTaskExecutor")
+	public Executor getAsyncExecutor() {
+	    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+	    executor.setCorePoolSize(3);
+	    executor.setMaxPoolSize(3);
+	    executor.setQueueCapacity(500);
+	    executor.setThreadNamePrefix("Async-");
+	    executor.initialize();
+	    return executor;
+	}
+	
 	@PostConstruct
 	private void logVersion() {
 		log.info("Name " + buildProperties.getName());

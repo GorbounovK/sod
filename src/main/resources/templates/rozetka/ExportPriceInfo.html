@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/header :: html_head">
+    <title>Экспорт прайса на rozetka.ua</title>
+</head>
+
+<body>
+
+    <div th:replace="fragments/header :: header"></div>
+
+    <div class="section container mt-3">
+        <div class="columns">
+            <div class="column is-3 is-hidden-mobile">
+                <div th:replace="fragments/nav_left :: nav_left"></div>
+            </div>
+            <div class="column">
+                <!-- основной контент -->
+                <h1 class="title">Экспорт прайса на rozetka.ua</h1>
+                <!-- Информация о времени запуска-->
+                <div class="notification m-1 p-1">
+                    <!--                     <form action="#" th:action="@{/prom/save_cron_import_orders}" method="post"
+                        th:object="${promExportPriceInfo}">
+                        <div class="field-body">
+                            <fieldset disabled>
+                                <div class="field has-addons">
+                                    <div class="control">
+                                        <input type="text" class="input" th:field="*{cron}"
+                                            placeholder="cron expresions">
+                                    </div>
+                                    <div class="control">
+                                        <button class="button is-info">Изменить</button>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </form> -->
+                </div>
+                <!-- Верхние кнопки-->
+                <div class="box p-1 m-1">
+                    <a class="button is-primary" href="/rozetka/exportPrice">Выгрузить прайс</a>
+                    <a class="button" href="/rozetka/refreshLogsExportPrice">Обновить логи</a>
+                </div>
+                <div class="content">
+                    <div th:unless="${#lists.isEmpty(exportPriceEntity)}">
+                        <table class="table table is-hoverable is-striped is-bordered">
+                            <thead>
+                                <tr>
+                                    <th>id</th>
+                                    <th>Время запуска</th>
+                                    <th>Результат</th>
+                                    <th>Длительность</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="exportEntyti : ${exportPriceEntity}">
+                                    <td th:text="${exportEntyti.id}">
+                                    </td>
+                                    <td width="20%"
+                                        th:text="${#dates.format(exportEntyti.lastExecution,'dd-MM-yyyy HH:mm:ss')}">
+                                    </td>
+                                    <td width="50%" 
+                                    	th:text="${exportEntyti.resultExecution}">
+                                    </td>
+                                    <td th:text="${exportEntyti.executionTime}">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:replace="fragments/footer :: footer"></div>
+
+</body>
+
+</html>

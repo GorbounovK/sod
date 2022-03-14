@@ -1,10 +1,8 @@
-/**
- * 
- */
-package ua.org.gorbounov.sod.models;
+package ua.org.gorbounov.sod.rozetka.models;
 
 import org.springframework.stereotype.Component;
 
+import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -12,8 +10,9 @@ import lombok.extern.log4j.Log4j2;
  *
  */
 @Log4j2
+@ToString
 @Component
-public class PromImportOrdersInfo {
+public class RozetkaExportPriceInfo {
 	private String cron;
 	
 	public String getCron() {
@@ -23,5 +22,4 @@ public class PromImportOrdersInfo {
 	public void setCron(String cron) {
 		this.cron = cron;
 	}
-
 }
