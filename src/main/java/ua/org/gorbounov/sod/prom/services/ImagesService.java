@@ -131,7 +131,7 @@ public class ImagesService {
 				attrs = Files.readAttributes(fileEntry, BasicFileAttributes.class);
 				log.debug("name {}, modificated {}", fileEntry.getFileName(), attrs.lastModifiedTime());
 				resString = uploadImageToFtp(ftpClient, fileEntry.toFile(), fileEntry.getFileName().toString());
-				resStringTotal = resStringTotal + resString + "<br>";
+				resStringTotal = resString;
 				log.trace("resStringTotal {}", resStringTotal);
 			}
 			ftpClient.logout();

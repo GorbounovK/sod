@@ -27,6 +27,12 @@ public class ApplicationProperties {
 	@Value("${rozetka.enabled:false}")
 	private boolean rozetkaEnabled;
 
+	@Value("${prom.ua.price.path:''}")
+	private String promExportPricePath;
+
+	@Value("${rozetka.ua.price.path:''}")
+	private String rozetkaExportPricePath;
+
 	@PostConstruct
 	public void init() {
 		log.info(toString());

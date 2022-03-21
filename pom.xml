@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -11,7 +9,7 @@
 	</parent>
 	<groupId>ua.org.gorbounov</groupId>
 	<artifactId>sod</artifactId>
-	<version>0.1.25</version>
+	<version>0.1.26</version>
 	<packaging>jar</packaging>
 	<name>sod</name>
 	<description>SOD</description>
@@ -99,6 +97,11 @@
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 
+<!--		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-cloud-starter</artifactId>
+		</dependency>-->
+
 		<!-- <dependency> <groupId>de.codecentric</groupId> <artifactId>spring-boot-admin-starter-server</artifactId> 
 			</dependency> -->
 
@@ -127,10 +130,11 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.webjars.npm</groupId>
+			<groupId>org.webjars</groupId>
 			<artifactId>font-awesome</artifactId>
-			<version>4.7.0</version>
-			<scope>runtime</scope>
+			<!--	<version>4.7.0</version> -->
+			<version>5.15.4</version>
+			<!--	<scope>runtime</scope> -->
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.webjars/jquery -->
@@ -215,7 +219,7 @@
 
 
 	<build>
-<!-- 		<resources>
+		<!-- 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
