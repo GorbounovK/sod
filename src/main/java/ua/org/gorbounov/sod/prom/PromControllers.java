@@ -13,16 +13,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import lombok.extern.log4j.Log4j2;
 import ua.org.gorbounov.sod.models.ApplicationProperties;
 import ua.org.gorbounov.sod.models.ImageEntity;
+import ua.org.gorbounov.sod.prom.models.ProductSearch;
 import ua.org.gorbounov.sod.prom.models.PromExportPriceEntity;
 import ua.org.gorbounov.sod.prom.models.PromExportPriceInfo;
 import ua.org.gorbounov.sod.prom.models.PromImportOrdersInfo;
 import ua.org.gorbounov.sod.prom.models.PromOrdersEntity;
+import ua.org.gorbounov.sod.prom.models.PromProduct;
 import ua.org.gorbounov.sod.prom.repositories.PromOrdersEntityRepozitories;
 import ua.org.gorbounov.sod.prom.services.ExportPriceInfoService;
 import ua.org.gorbounov.sod.prom.services.ExportService;
 import ua.org.gorbounov.sod.prom.services.ImagesInfoService;
 import ua.org.gorbounov.sod.prom.services.ImagesService;
 import ua.org.gorbounov.sod.prom.services.ImportOrdersInfoService;
+import ua.org.gorbounov.sod.prom.services.ImportProductFromProm;
 import ua.org.gorbounov.sod.prom.services.OrdersService;
 
 /**
@@ -58,6 +61,11 @@ public class PromControllers {
 	@Autowired
 	private ApplicationProperties prop;
 
+	@Autowired
+	private ImportProductFromProm importProductFromProm;
+	
+	@Autowired
+	private ProductSearch productSearch;
 	/**
 	 * @param promImportOrdersInfo
 	 * @param model
@@ -95,6 +103,38 @@ public class PromControllers {
 		model.addAttribute("prop", prop);
 		return "prom/ImportOrders";
 	
+	}
+	
+	@GetMapping("/importProducts")
+	public String importProducts(Model model) {
+		log.debug("prom/importProducts");
+//		List<PromOrdersEntity> ordersInfoEntity = ordersInfoService.getAllImportOrdersInfo();
+//		log.debug("ordersInfoEntity.size {}",ordersInfoEntity.size());
+//		model.addAttribute("promImportOrdersInfo", promImportOrdersInfo);
+		model.addAttribute("productSearch", productSearch);
+		List<PromProduct> products = importProductFromProm.getAllProducts();
+		model.addAttribute("products", products);
+		model.addAttribute("prop", prop);
+		return "prom/ImportProducts";
+	}
+	
+	//getProduct
+	@GetMapping("/getProducts")
+	public String getProducts(Model model) {
+		log.debug("prom/getProducts");
+		importProductFromProm.importProductFromXml();
+		String res = this.importProducts(model);
+		return res;
+	}
+	
+	@PostMapping("/product")
+	public String productSearchByBarcode(@ModelAttribute ProductSearch productSearch, Model model) {
+		log.trace("search barcode = "+ productSearch.getBarcode());
+		List <PromProduct> products = importProductFromProm.getProductsByBarcode(productSearch.getBarcode());
+		model.addAttribute("products", products);
+		model.addAttribute("prop", prop);
+		return "prom/ImportProducts";
+		
 	}
 	
 	@GetMapping("/exportPriceInfo")
@@ -156,6 +196,7 @@ public class PromControllers {
 		model.addAttribute("prop", prop);
 		return res;
 	}
+	
 	@GetMapping("/refreshLogsExportPrice")
 	public String refreshLogsExportPric(Model model) {
 		String res = this.exportPriceInfo( model);
@@ -164,4 +205,11 @@ public class PromControllers {
 		return res;
 	}
 
+//	@GetMapping("/importProductFromProm")
+//	public String importProductFromProm(Model model) {
+//		importProductFromProm.importProductFromXml(10);
+//		log.debug("/importProductFromProm - ");
+//		model.addAttribute("prop", prop);
+//		return "index";
+//	}
 }

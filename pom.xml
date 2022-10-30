@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>ua.org.gorbounov</groupId>
 	<artifactId>sod</artifactId>
-	<version>0.1.26</version>
+	<version>0.1.30</version>
 	<packaging>jar</packaging>
 	<name>sod</name>
 	<description>SOD</description>

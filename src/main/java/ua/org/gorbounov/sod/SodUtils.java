@@ -1,8 +1,12 @@
 package ua.org.gorbounov.sod;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeUnit;
 
-public class Utils {
+public class SodUtils {
 	/**
 	 * @param duration
 	 * @return
@@ -26,5 +30,18 @@ public class Utils {
 //			res = String.format("%dd %02d:%02d:%02d.%04d", days, hours, minutes, seconds, millis);
 			res = String.format("%dd %02d:%02d:%02d", days, hours, minutes, seconds);
 		return res;
+	}
+	
+	/**
+	 * @param startTime
+	 * @param endTime
+	 * @return Интервал между событиями в отформатированной строке
+	 */
+	public static String getDurationToString(long startTime, long endTime) {
+		DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_TIME;
+		Instant instStart = Instant.ofEpochMilli(startTime);
+		Instant instEnd = Instant.ofEpochMilli(endTime);
+		String resStr = LocalTime.ofSecondOfDay(Duration.between(instStart, instEnd).getSeconds()).format(formatter);
+		return resStr;
 	}
 }

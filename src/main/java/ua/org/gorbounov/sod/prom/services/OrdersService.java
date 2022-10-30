@@ -76,7 +76,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import lombok.extern.log4j.Log4j2;
-import ua.org.gorbounov.sod.Utils;
+import ua.org.gorbounov.sod.SodUtils;
 import ua.org.gorbounov.sod.prom.models.PromImportOrdersInfo;
 import ua.org.gorbounov.sod.prom.models.PromOrdersEntity;
 import ua.org.gorbounov.sod.prom.repositories.PromOrdersEntityRepozitories;
@@ -146,7 +146,7 @@ public class OrdersService {
 		long endTime = System.currentTimeMillis();
 		long executionTime = endTime - startTime;
 		log.debug("endTime {} - startTime {}", endTime, startTime);
-		String durationString = Utils.millisToShortDHMS(executionTime);
+		String durationString = SodUtils.millisToShortDHMS(executionTime);
 		log.info("Total execution time: " + durationString);
 //		String executionTimeString = String.valueOf(executionTime);
 		log.debug("------- getOrdersSheduledTask complete -----------");
