@@ -1,0 +1,109 @@
+<!ELEMENT yml_catalog (shop)>
+<!ATTLIST yml_catalog
+    date CDATA #REQUIRED>
+
+<!ELEMENT shop (name, company, url, currencies, categories, deliveryIncluded?, offers)>
+<!ELEMENT company (#PCDATA)>
+
+<!ELEMENT currencies (currency+)>
+<!ELEMENT currency EMPTY>
+<!ATTLIST currency
+    id (RUR|USD|DM|EUR|UAH|BYN|KZT) #REQUIRED
+    rate CDATA "1"
+    plus CDATA "0">
+
+
+<!ELEMENT categories (category+)>
+<!ELEMENT category (#PCDATA)>
+<!ATTLIST category
+    id CDATA #REQUIRED
+    parentId CDATA "0"
+    tid CDATA #IMPLIED
+    yid CDATA #IMPLIED>
+
+<!ELEMENT offers (offer+)>
+<!--
+#< ELEMENT offer (url, buyurl?, price, wprice?, currencyId, xCategory?, categoryId+, 
+#                 picture?, pickup?, delivery?, deliveryIncluded?, orderingTime?, vendor?,
+#                 ((typePrefix?, vendor, vendorCode?, model, (provider, tarifplan?)?) |
+#                  (author?, name, name_ua?, vendor?, vendorCode?, country_of_origin?,  publisher?, series?, year?, ISBN?) |
+#                  (artist?, title, year?, media?, starring?, director?, originalName?, country?) |
+#                  (worldRegion?, country?, region?, days, dataTour*, name, hotel_stars?, included, transport, price_min?, price_max?, options?) |
+#                  (name, vendorCode?)
+#                 ),
+#                 aliases?, additional*, description?, description_ua?, sales_notes?, param?, adult?
+#                )>
+-->
+
+<!ELEMENT offer (url, price, currencyId, categoryId,  picture, pickup, delivery, 
+	name?, name_ua?, vendor?, vendorCode?, country_of_origin?, description, description_ua?, 
+	sales_notes?, adult?, param*)>
+
+<!ATTLIST offer
+    id CDATA #IMPLIED
+    type (vendor.model | book | artist.title | tour) #IMPLIED
+	available CDATA #IMPLIED>
+
+<!ELEMENT url (#PCDATA)>
+<!ELEMENT buyurl (#PCDATA)>
+<!ELEMENT picture (#PCDATA)>
+<!ELEMENT pickup (#PCDATA)>
+<!ELEMENT delivery (#PCDATA)>
+<!ELEMENT deliveryIncluded EMPTY>
+<!ELEMENT orderingTime (onstock?, ordering, deliveryTime?)>
+<!ELEMENT onstock EMPTY>
+<!ELEMENT ordering (#PCDATA)>
+<!ATTLIST ordering
+    hours CDATA #IMPLIED>
+
+<!ELEMENT deliveryTime EMPTY>
+<!ELEMENT price (#PCDATA)>
+<!ELEMENT wprice (#PCDATA)>
+<!ELEMENT currencyId (#PCDATA)>
+<!ELEMENT categoryId (#PCDATA)>
+<!ATTLIST categoryId
+    type (Yandex | Torg | Own) "Own" >
+
+<!ELEMENT typePrefix (#PCDATA)>
+<!ELEMENT vendor (#PCDATA)>
+<!ELEMENT vendorCode (#PCDATA)>
+<!ELEMENT model (#PCDATA)>
+<!ELEMENT author (#PCDATA)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT name_ua (#PCDATA)>
+<!ELEMENT publisher (#PCDATA)>
+<!ELEMENT ISBN (#PCDATA)>
+<!ELEMENT series (#PCDATA)>
+<!ELEMENT year (#PCDATA)>
+<!ELEMENT artist (#PCDATA)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT media (#PCDATA)>
+<!ELEMENT starring (#PCDATA)>
+<!ELEMENT director (#PCDATA)>
+<!ELEMENT originalName (#PCDATA)>
+<!ELEMENT country (#PCDATA)>
+<!ELEMENT description (#PCDATA)>
+<!ELEMENT aliases (#PCDATA)>
+<!ELEMENT provider (#PCDATA)>
+<!ELEMENT tarifplan (#PCDATA)>
+<!ELEMENT xCategory (#PCDATA)>
+<!ELEMENT additional (#PCDATA)>
+<!ELEMENT worldRegion (#PCDATA)>
+<!ELEMENT region (#PCDATA)>
+<!ELEMENT days (#PCDATA)>
+<!ELEMENT dataTour (#PCDATA)>
+<!ELEMENT hotel_stars (#PCDATA)>
+<!ELEMENT included (#PCDATA)>
+<!ELEMENT transport (#PCDATA)>
+<!ELEMENT price_min (#PCDATA)>
+<!ELEMENT price_max (#PCDATA)>
+<!ELEMENT options (#PCDATA)>
+<!ELEMENT country_of_origin (#PCDATA)>
+<!ELEMENT description_ua (#PCDATA)>
+<!ELEMENT param (#PCDATA)>
+<!ATTLIST param 
+	name CDATA #IMPLIED
+	unit CDATA #IMPLIED>
+
+<!ELEMENT sales_notes (#PCDATA)>
+<!ELEMENT adult (#PCDATA)>
