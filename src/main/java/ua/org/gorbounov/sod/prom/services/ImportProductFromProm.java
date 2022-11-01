@@ -67,20 +67,24 @@ public class ImportProductFromProm {
 	@Autowired
 	private PromProductRepozitories repository;
 
-	public List<PromProduct> getAllProducts() {
+	public Page<PromProduct> getAllProducts(Pageable pageable) {
 		log.debug("getAllProducts");
+        int pageSize = pageable.getPageSize();
+        int currentPage = pageable.getPageNumber();
+        int startItem = currentPage * pageSize;
+
 		Pageable first20 = PageRequest.of(0, 10);
 		Pageable last10 = PageRequest.of(0, 10, Sort.by("id").descending());
 //		Pageable last10 = PageRequest.of(0, 10, Sort.by("id"));
 
-		Page<PromProduct> pagedResult = repository.findAll(last10);
+		Page<PromProduct> pagedResult = repository.findAll(pageable);
 		log.trace("pagedResult.size {}", pagedResult.getSize());
-		if (pagedResult.hasContent()) {
-			return pagedResult.getContent();
-		} else {
-			return (List<PromProduct>) new ArrayList<PromProduct>();
-		}
-
+//		if (pagedResult.hasContent()) {
+//			return pagedResult.getContent();
+//		} else {
+//			return (List<PromProduct>) new ArrayList<PromProduct>();
+//		}
+		return pagedResult;
 	}
 
 	/*
@@ -425,7 +429,7 @@ public class ImportProductFromProm {
 	}
 
 	public List<PromProduct> getProductsByBarcode(String barcode) {
-		log.debug("getAllProducts");
+		log.debug("getProductsByBarcode");
 		Pageable last10 = PageRequest.of(0, 10, Sort.by("id").descending());
 //		Pageable last10 = PageRequest.of(0, 10, Sort.by("id"));
 

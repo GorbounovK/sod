@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>ua.org.gorbounov</groupId>
 	<artifactId>sod</artifactId>
-	<version>0.1.30</version>
+	<version>0.1.32</version>
 	<packaging>jar</packaging>
 	<name>sod</name>
 	<description>SOD</description>
@@ -125,7 +125,7 @@
 		<dependency>
 			<groupId>org.webjars.npm</groupId>
 			<artifactId>bulma</artifactId>
-			<version>0.9.1</version>
+			<version>0.9.4</version>
 			<scope>runtime</scope>
 		</dependency>
 

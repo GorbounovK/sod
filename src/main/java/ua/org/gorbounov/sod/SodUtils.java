@@ -4,8 +4,13 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+import lombok.extern.log4j.Log4j2;
+import ua.org.gorbounov.sod.prom.PromControllers;
+
+@Log4j2
 public class SodUtils {
 	/**
 	 * @param duration
@@ -31,7 +36,7 @@ public class SodUtils {
 			res = String.format("%dd %02d:%02d:%02d", days, hours, minutes, seconds);
 		return res;
 	}
-	
+
 	/**
 	 * @param startTime
 	 * @param endTime
@@ -43,5 +48,38 @@ public class SodUtils {
 		Instant instEnd = Instant.ofEpochMilli(endTime);
 		String resStr = LocalTime.ofSecondOfDay(Duration.between(instStart, instEnd).getSeconds()).format(formatter);
 		return resStr;
+	}
+
+	public static int[] paginatorView(int totalPages, int pageNumber) {
+		int[] body;
+		if (totalPages > 7) {
+//			int totalPages = page.getTotalPages();
+//			int pageNumber = page.getNumber() + 1;
+			int[] head = (pageNumber > 4) ? new int[] { 1, -1 } : new int[] { 1, 2, 3 };
+			int[] bodyBefore = (pageNumber > 4 && pageNumber < totalPages - 1)
+					? new int[] { pageNumber - 2, pageNumber - 1 }
+					: new int[] {};
+			int[] bodyCenter = (pageNumber > 3 && pageNumber < totalPages - 2) ? new int[] { pageNumber }
+					: new int[] {};
+			int[] bodyAfter = (pageNumber > 2 && pageNumber < totalPages - 3)
+					? new int[] { pageNumber + 1, pageNumber + 2 }
+					: new int[] {};
+			int[] tail = (pageNumber < totalPages - 3) ? new int[] { -1, totalPages }
+					: new int[] { totalPages - 2, totalPages - 1, totalPages };
+			body = merge(head, bodyBefore, bodyCenter, bodyAfter, tail);
+		} else {
+			body = new int[totalPages];
+			for (int i = 0; i < totalPages; i++) {
+				body[i] = 1 + i;
+			}
+		}
+		log.debug("pages view = "+Arrays.toString(body));
+		return body;
+
+	}
+	
+	public static int[] merge(int[]... intarrays) {
+	    return Arrays.stream(intarrays).flatMapToInt(Arrays::stream)
+	            .toArray();
 	}
 }

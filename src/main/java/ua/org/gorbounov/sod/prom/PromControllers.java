@@ -1,16 +1,21 @@
 package ua.org.gorbounov.sod.prom;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.extern.log4j.Log4j2;
+import ua.org.gorbounov.sod.SodUtils;
 import ua.org.gorbounov.sod.models.ApplicationProperties;
 import ua.org.gorbounov.sod.models.ImageEntity;
 import ua.org.gorbounov.sod.prom.models.ProductSearch;
@@ -105,16 +110,33 @@ public class PromControllers {
 	
 	}
 	
-	@GetMapping("/importProducts")
-	public String importProducts(Model model) {
-		log.debug("prom/importProducts");
+	@GetMapping("/listProducts")
+	public String listProducts(Model model, @RequestParam("page") Optional<Integer> pageCurrent, 
+		      @RequestParam("size") Optional<Integer> size) {
+        int currentPage = 0;
+        int pageSize = size.orElse(10);
+        if(pageCurrent.isPresent()) {
+        	currentPage = pageCurrent.get()-1;
+        }
+        
+		log.debug("prom/listProducts, page="+pageCurrent+" size="+size);
 //		List<PromOrdersEntity> ordersInfoEntity = ordersInfoService.getAllImportOrdersInfo();
 //		log.debug("ordersInfoEntity.size {}",ordersInfoEntity.size());
 //		model.addAttribute("promImportOrdersInfo", promImportOrdersInfo);
 		model.addAttribute("productSearch", productSearch);
-		List<PromProduct> products = importProductFromProm.getAllProducts();
-		model.addAttribute("products", products);
+		Page<PromProduct> productsPage = importProductFromProm.getAllProducts(PageRequest.of(currentPage, pageSize));
+		List<PromProduct> listProducts = productsPage.getContent();
+//		int totalPages = products.getTotalPages();
+		model.addAttribute("products", listProducts);
+//		model.addAttribute("totalPages", totalPages);
+		model.addAttribute("currentPage", pageCurrent);
+		log.debug("totalPages="+productsPage.getTotalPages()+" currentPage="+currentPage);
+		int[] pages = SodUtils.paginatorView(productsPage.getTotalPages(), currentPage+1);
+		model.addAttribute("body", pages);
+		model.addAttribute("page", productsPage);
 		model.addAttribute("prop", prop);
+		
+		//productsPage.getTotalPages()
 		return "prom/ImportProducts";
 	}
 	
@@ -123,7 +145,8 @@ public class PromControllers {
 	public String getProducts(Model model) {
 		log.debug("prom/getProducts");
 		importProductFromProm.importProductFromXml();
-		String res = this.importProducts(model);
+//		String res = this.listProducts(model,1, 10);
+		String res = "prom/ImportProducts";
 		return res;
 	}
 	
