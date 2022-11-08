@@ -17,7 +17,8 @@ import lombok.extern.log4j.Log4j2;
 public class PromProduct {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Integer id;
+//	private Integer id;
+	private long id;
 	
 	private String promId;
 	private String url;
@@ -42,10 +43,10 @@ public class PromProduct {
 	//
 	private String barcode;
 	
-	public Integer getId() {
+	public long getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(long id) {
 		id = id;
 	}
 	public String getUrl() {

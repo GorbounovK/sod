@@ -85,7 +85,9 @@
 									<td th:text="${productEntyti.id}"></td>
 									<td th:text="${productEntyti.promId}"></td>
 									<td width="20%" th:text="${productEntyti.barcode}"></td>
-									<td width="50%" th:text="${productEntyti.name}"></td>
+									<td width="50%" >
+										<a th:href="@{'/prom/product/'+${productEntyti.id}}" th:text="${productEntyti.name}"></a>
+									</td>
 									<!--                        <td th:text="${productEntyti.localPathImg}">-->
 									<td width="20%"><a th:href="@{'/img/'+${productEntyti.localPathImg}}"
 											target="_blank">

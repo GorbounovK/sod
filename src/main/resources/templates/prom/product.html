@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/header :: html_head">
+    <title>Импорт товаров с prom.ua</title>
+</head>
+
+<body>
+    <div th:replace="fragments/header :: header"></div>
+
+    <div class="section mt-3">
+        <div class="columns">
+            <div class="column is-3 is-hidden-mobile">
+                <div th:replace="fragments/nav_left :: nav_left"></div>
+            </div>
+            <div class="column">
+                <!--<h3>Информация о товаре</h3> -->
+                <div class="columns">
+                    <div class="column is-5 has-text-centered ">
+                        <div class="container has-background-light">
+                            <a th:href="@{'/img/'+${product.localPathImg}}" target="_blank">
+                                <figure class="image p-1 m-1">
+                                    <img th:src="@{'/img/'+${product.localPathImg}}" />
+                                </figure>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="column is-7 has-background-white">
+                        <h1 class="is-size-4 title" th:text="${product.name}">Туалетна
+                            вода GIAN MARCO VENTURI GIRL 100 ml (002747056540)</h1>
+                        <h3 class="subtitle is-size4 has-text-greyhas-text-grey mt-4"
+                            th:text="'Код товара '+${product.vendorCode}">Код
+                            товара: 169966</h3>
+                        <h3 class="subtitle is-size4 has-text-greyhas-text-grey mt-4"
+                            th:text="'Штрихкод : ' + ${product.barcode}">Штрихкод
+                            товара: 169966</h3>
+                        <div class="is-size-4 mb-4" th:text="'Цена ' + ${product.price}">601.5
+                            грн</div>
+                        <p class="mb-4" th:text="${product.description}">Lorem, ipsum
+                            dolor sit amet consectetur adipisicing elit. Tempora, nulla.</p>
+                        <form>
+                            <div class="field">
+                                <div class="mb-6">
+                                    <div class="select">
+                                        <select>
+                                            <option>50ml</option>
+                                            <option>100ml</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="button is-danger ">В корзину</button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div th:replace="fragments/footer :: footer"></div>
+</body>
+
+</html>

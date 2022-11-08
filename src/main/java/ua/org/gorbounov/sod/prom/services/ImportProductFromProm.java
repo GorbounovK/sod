@@ -86,6 +86,13 @@ public class ImportProductFromProm {
 //		}
 		return pagedResult;
 	}
+	
+	public PromProduct getProductById(long id) {
+		PromProduct product = repository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));;
+		return product;		
+				
+	}
 
 	/*
 	 * @param i
@@ -428,17 +435,17 @@ public class ImportProductFromProm {
 		log.info(toString());
 	}
 
-	public List<PromProduct> getProductsByBarcode(String barcode) {
+	public Page<PromProduct> getProductsByBarcode(String barcode,Pageable pageable) {
 		log.debug("getProductsByBarcode");
-		Pageable last10 = PageRequest.of(0, 10, Sort.by("id").descending());
+//		Pageable last10 = PageRequest.of(0, 10, Sort.by("id").descending());
 //		Pageable last10 = PageRequest.of(0, 10, Sort.by("id"));
 
-		Page<PromProduct> pagedResult = repository.findByBarcodeContaining(barcode, last10);
+		Page<PromProduct> pagedResult = repository.findByBarcodeContaining(barcode, pageable);
 		log.trace("pagedResult.size {}", pagedResult.getSize());
-		if (pagedResult.hasContent()) {
-			return pagedResult.getContent();
-		} else {
-			return (List<PromProduct>) new ArrayList<PromProduct>();
-		}
+//		if (pagedResult.hasContent()) {
+			return pagedResult;
+//		} else {
+//			return (Page<PromProduct>) new Page<PromProduct>();
+//		}
 	}
 }
