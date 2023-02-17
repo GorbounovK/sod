@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.log4j.Log4j2;
-import ua.org.gorbounov.sod.Utils;
+import ua.org.gorbounov.sod.SodUtils;
 import ua.org.gorbounov.sod.prom.models.PromExportPriceEntity;
 import ua.org.gorbounov.sod.prom.models.PromExportPriceInfo;
 import ua.org.gorbounov.sod.prom.models.PromImportOrdersInfo;
@@ -60,7 +60,8 @@ public class ExportService {
 		long endTime = System.currentTimeMillis();
 		log.debug("endTime {} - startTime {}", endTime, startTime);
 		long executionTime = endTime - startTime;
-		String durationString = Utils.millisToShortDHMS(executionTime);
+		String durationString;
+			durationString = SodUtils.millisToShortDHMS(executionTime);
 		log.info("Total execution time: " + durationString);
 		log.debug("------- exportProductSheduledTask complete -----------");
 		promExportPriceEntity.setExecutionTime(durationString);

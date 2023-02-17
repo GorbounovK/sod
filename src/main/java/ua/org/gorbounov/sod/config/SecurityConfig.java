@@ -43,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		
 	    http.csrf().disable()
         .authorizeRequests()
-        .antMatchers("/", "/index", "/prom/**","/rozetka/**", "/about", "/webjars/**","/js/**", "/h2-console/**").permitAll()
+        .antMatchers("/", "/index", "/img/**","/prom/**","/rozetka/**", "/about", "/webjars/**","/js/**", "/h2-console/**").permitAll()
         .antMatchers("/admin/**",  "/actuator/**").hasAnyRole("ADMIN")
         .antMatchers("/user/**").hasAnyRole("USER")
         .anyRequest().authenticated()
@@ -68,7 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
  
         auth.inMemoryAuthentication()
-                .withUser("user").password("password").roles("USER")
+                .withUser("user").password("{noop}password").roles("USER")
                 .and()
                 .withUser("admin").password("{noop}admin").roles("ADMIN");
     }

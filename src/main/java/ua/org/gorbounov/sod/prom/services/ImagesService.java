@@ -33,7 +33,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import lombok.extern.log4j.Log4j2;
-import ua.org.gorbounov.sod.Utils;
+import ua.org.gorbounov.sod.SodUtils;
 import ua.org.gorbounov.sod.models.ImageEntity;
 import ua.org.gorbounov.sod.prom.repositories.ImageRepositories;
 
@@ -103,7 +103,7 @@ public class ImagesService {
 		long endTime = System.currentTimeMillis();
 		log.debug("endTime {} - startTime {}", endTime, startTime);
 		long executionTime = endTime - startTime;
-		String durationString = Utils.millisToShortDHMS(executionTime);
+		String durationString = SodUtils.millisToShortDHMS(executionTime);
 		log.info("Total execution time: " + durationString);
 		imageEntity.setExecutionTime(durationString);
 		imageEntity.setResultExecution(resStringTotal);
@@ -131,7 +131,7 @@ public class ImagesService {
 				attrs = Files.readAttributes(fileEntry, BasicFileAttributes.class);
 				log.debug("name {}, modificated {}", fileEntry.getFileName(), attrs.lastModifiedTime());
 				resString = uploadImageToFtp(ftpClient, fileEntry.toFile(), fileEntry.getFileName().toString());
-				resStringTotal = resStringTotal + resString + "<br>";
+				resStringTotal = resString;
 				log.trace("resStringTotal {}", resStringTotal);
 			}
 			ftpClient.logout();
@@ -148,7 +148,7 @@ public class ImagesService {
 		long endTime = System.currentTimeMillis();
 		log.debug("endTime {} - startTime {}", endTime, startTime);
 		long executionTime = endTime - startTime;
-		String durationString = Utils.millisToShortDHMS(executionTime);
+		String durationString = SodUtils.millisToShortDHMS(executionTime);
 		log.info("Total execution time: " + durationString);
 		log.trace("imageEntity={}", imageEntity.toString());
 		log.debug("------- sendAllImagesToFtp end -----------");

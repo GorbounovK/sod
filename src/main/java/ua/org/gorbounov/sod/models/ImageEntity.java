@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -29,7 +30,8 @@ public class ImageEntity {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastUpload;
 	
-	@Column(length = 1000)
+	//@Column(length = 1000)
+	@Lob
 	private String resultExecution = "";	
 	private String executionTime = "";
 	
