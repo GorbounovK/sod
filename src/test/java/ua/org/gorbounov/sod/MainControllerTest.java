@@ -28,9 +28,6 @@ public class MainControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 
-	@Autowired
-	private MainController controller;
-	
 	@Test
 	public void shouldReturnDefaultMessage() throws Exception {
 		this.mockMvc.perform(get("/")).andDo(print()).andExpect(status().isOk())

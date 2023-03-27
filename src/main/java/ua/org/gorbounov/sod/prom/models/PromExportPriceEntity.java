@@ -13,13 +13,11 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import lombok.ToString;
-import lombok.extern.log4j.Log4j2;
 
 /**
  * @author gk
  *
  */
-@Log4j2
 @ToString
 @Entity
 public class PromExportPriceEntity {

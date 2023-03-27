@@ -6,19 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -26,7 +16,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.net.ftp.FTPClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -41,9 +30,7 @@ import org.w3c.dom.NodeList;
 
 import lombok.extern.log4j.Log4j2;
 import ua.org.gorbounov.sod.SodUtils;
-import ua.org.gorbounov.sod.prom.models.PromOrdersEntity;
 import ua.org.gorbounov.sod.prom.models.PromProduct;
-import ua.org.gorbounov.sod.prom.repositories.ImageRepositories;
 import ua.org.gorbounov.sod.prom.repositories.PromProductRepozitories;
 
 @Log4j2
@@ -64,6 +51,9 @@ public class ImportProductFromProm {
 	@Value("${prom.ua.products.import.images.local.path}")
 	private String imgLocalPathRoot;
 
+	@Value("${prom.ua.products.import.images.enableDownloadImage:false}")
+	private boolean isEnableDownloadImage;
+	
 	@Autowired
 	private PromProductRepozitories repository;
 
@@ -228,8 +218,11 @@ public class ImportProductFromProm {
 				product.setPrice(new BigDecimal(eElement.getElementsByTagName("price").item(0).getTextContent()));
 				log.trace("price = " + product.getPrice());
 //
-				String fn = saveImageLocal(urlImage, getLocalImagePath(urlImage));
-				product.setLocalPathImg(fn);
+				String imageLocalFilePath = getLocalImagePath(urlImage);
+				if(isEnableDownloadImage) {
+					String fn = saveImageLocal(urlImage, imageLocalFilePath);
+				}
+				product.setLocalPathImg(imageLocalFilePath);
 
 				String bc = "";
 				NodeList nl = eElement.getElementsByTagName("param");
@@ -388,8 +381,9 @@ public class ImportProductFromProm {
 	 */
 	private Document getDocumentFromUrl(String xmlDocumentUrl) throws Exception {
 		log.debug("url xml.file = " + xmlDocumentUrl);
-//		File fXmlFile = new File(FILE_NAME);
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		dbFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 		Document doc = dBuilder.parse(new URL(xmlDocumentUrl).openStream());
 		Element eElement = (Element) doc.getElementsByTagName("yml_catalog").item(0);

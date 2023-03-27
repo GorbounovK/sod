@@ -2,7 +2,6 @@ package ua.org.gorbounov.sod.prom.repositories;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

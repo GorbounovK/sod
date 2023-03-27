@@ -1,31 +1,16 @@
 package ua.org.gorbounov.sod.prom.services;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.security.SecureRandom;
-import java.security.Security;
-import java.security.cert.CertPathValidatorException;
 import java.security.cert.Certificate;
-import java.security.cert.X509Certificate;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLPeerUnverifiedException;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -36,29 +21,14 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import java.util.Objects;
-
-import java.util.Arrays;
 import java.util.Date;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpsURL;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 
-import org.apache.http.NameValuePair;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.ssl.TrustStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -66,8 +36,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Document;
@@ -305,12 +273,7 @@ public class OrdersService {
 
 	private void getXmlFromUrl() throws Exception {
 //
-//		try {
-		Document doc = getDocumentFromUrl(promUaOrdersUrl);
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+
 	}
 
 	/**

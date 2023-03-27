@@ -10,18 +10,13 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.log4j.Log4j2;
 import ua.org.gorbounov.sod.SodUtils;
 import ua.org.gorbounov.sod.prom.models.PromExportPriceEntity;
 import ua.org.gorbounov.sod.prom.models.PromExportPriceInfo;
-import ua.org.gorbounov.sod.prom.models.PromImportOrdersInfo;
-import ua.org.gorbounov.sod.prom.models.PromOrdersEntity;
 import ua.org.gorbounov.sod.prom.repositories.PromExportPriceEnityRepozitories;
-import ua.org.gorbounov.sod.prom.repositories.PromOrdersEntityRepozitories;
 
 @Log4j2
 @Service

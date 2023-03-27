@@ -25,7 +25,6 @@ import ua.org.gorbounov.sod.prom.models.PromExportPriceInfo;
 import ua.org.gorbounov.sod.prom.models.PromImportOrdersInfo;
 import ua.org.gorbounov.sod.prom.models.PromOrdersEntity;
 import ua.org.gorbounov.sod.prom.models.PromProduct;
-import ua.org.gorbounov.sod.prom.repositories.PromOrdersEntityRepozitories;
 import ua.org.gorbounov.sod.prom.services.ExportPriceInfoService;
 import ua.org.gorbounov.sod.prom.services.ExportService;
 import ua.org.gorbounov.sod.prom.services.ImagesInfoService;

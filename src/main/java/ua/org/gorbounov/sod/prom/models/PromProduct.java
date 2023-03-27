@@ -9,9 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 
 import lombok.ToString;
-import lombok.extern.log4j.Log4j2;
 
-@Log4j2
+
 @ToString
 @Entity
 public class PromProduct {
@@ -47,7 +46,7 @@ public class PromProduct {
 		return id;
 	}
 	public void setId(long id) {
-		id = id;
+		this.id = id;
 	}
 	public String getUrl() {
 		return url;

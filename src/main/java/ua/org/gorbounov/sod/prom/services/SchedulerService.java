@@ -8,13 +8,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import lombok.extern.log4j.Log4j2;
-
 /**
  * @author gk
  *
  */
-@Log4j2
+
 @Component
 public class SchedulerService {
 	@Autowired
